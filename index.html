@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caked by Caitlin | Hair &amp; Makeup Artist</title>
+    <meta name="description" content="Luxury hair and makeup artistry by Caitlin. Bridal, editorial, special events, and more.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- AOS - Animate on Scroll -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">Caked by Caitlin</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                <li><a href="#shop" class="nav-link">Shop</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                <li><a href="#booking" class="nav-link nav-link--cta">Book Now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="hero" style="background-image: url('images/img1.png');">
+        <div class="hero-overlay"></div>
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
+            <p class="hero-subtitle">Luxury Hair &amp; Makeup Artistry</p>
+            <h1 class="hero-title">Caked by Caitlin</h1>
+            <p class="hero-tagline">Unveil your most radiant self</p>
+            <div class="hero-cta">
+                <a href="#booking" class="btn btn-primary">Book Your Glam</a>
+                <a href="#portfolio" class="btn btn-outline">View My Work</a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="about section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="about-image-wrapper">
+                        <img src="images/img3.png" alt="Caitlin - Hair and Makeup Artist" class="about-photo">
+                        <div class="about-image-accent"></div>
+                    </div>
+                </div>
+                <div class="about-text" data-aos="fade-left" data-aos-duration="1000">
+                    <h2 class="section-label">About Me</h2>
+                    <h3 class="about-heading">The Artist Behind<br><span class="text-gold">the Glam</span></h3>
+                    <p>Welcome to Caked by Caitlin! I'm a passionate hair and makeup artist dedicated to making every client feel like the most beautiful version of themselves.</p>
+                    <p>With years of experience in bridal, editorial, and special event beauty, I bring a meticulous eye for detail and a love for creating stunning, personalized looks that enhance your natural beauty.</p>
+                    <p>Whether it's your wedding day, a photoshoot, or a special night out, I'm here to ensure you look and feel absolutely flawless.</p>
+                    <div class="about-stats">
+                        <div class="stat">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Happy Clients</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Dedication</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="services section section--dark" id="services">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-label">What I Offer</h2>
+                <h3 class="section-title">Services</h3>
+                <p class="section-subtitle">Tailored beauty experiences for every occasion</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="20" r="12" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M16 56 Q16 36 32 32 Q48 36 48 56" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M20 18 Q32 8 44 18" fill="none" stroke="#D4AF37" stroke-width="2"/></svg>
+                    </div>
+                    <h4 class="service-title">Bridal Glam</h4>
+                    <p class="service-desc">Your dream wedding look brought to life. Includes trial session, day-of application, and touch-up kit.</p>
+                    <span class="service-price">From $350</span>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="8" width="40" height="48" rx="4" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="32" cy="28" r="10" fill="none" stroke="#D4AF37" stroke-width="2"/><line x1="18" y1="44" x2="46" y2="44" stroke="#D4AF37" stroke-width="2"/><line x1="22" y1="50" x2="42" y2="50" stroke="#D4AF37" stroke-width="2"/></svg>
+                    </div>
+                    <h4 class="service-title">Editorial &amp; Photoshoot</h4>
+                    <p class="service-desc">Camera-ready artistry for magazines, lookbooks, and creative shoots. Bold or natural — your vision, my craft.</p>
+                    <span class="service-price">From $250</span>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8 L38 24 L56 24 L42 34 L46 52 L32 42 L18 52 L22 34 L8 24 L26 24 Z" fill="none" stroke="#D4AF37" stroke-width="2"/></svg>
+                    </div>
+                    <h4 class="service-title">Special Events</h4>
+                    <p class="service-desc">Prom, gala, birthday, or just because. Get the full glam treatment for your special occasion.</p>
+                    <span class="service-price">From $150</span>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8 C20 8 16 20 16 28 C16 36 24 40 32 56 C40 40 48 36 48 28 C48 20 44 8 32 8Z" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M24 28 Q32 16 40 28" fill="none" stroke="#D4AF37" stroke-width="2"/></svg>
+                    </div>
+                    <h4 class="service-title">Hair Styling</h4>
+                    <p class="service-desc">From elegant updos to flowing waves. Complete hair styling to complement your makeup look.</p>
+                    <span class="service-price">From $120</span>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="20" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M24 32 L30 38 L42 26" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h4 class="service-title">1-on-1 Lessons</h4>
+                    <p class="service-desc">Learn pro techniques in a private session. Master your everyday look or level up your skills.</p>
+                    <span class="service-price">From $200</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PORTFOLIO ===================== -->
+    <section class="portfolio section" id="portfolio">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-label">My Work</h2>
+                <h3 class="section-title">Portfolio</h3>
+                <p class="section-subtitle">A glimpse into the glam</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item portfolio-item--tall" data-aos="fade-up" data-aos-delay="0">
+                    <img src="images/img1.png" alt="Bridal look - bride at ceremony venue">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Bridal</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="images/img4.png" alt="Editorial glam - lip application">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Editorial</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="200">
+                    <img src="images/img6.png" alt="Special event - natural fresh glam">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Special Event</span>
+                    </div>
+                </div>
+                <div class="portfolio-item portfolio-item--wide" data-aos="fade-up" data-aos-delay="100">
+                    <img src="images/img2.png" alt="Before and after makeup transformation">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Transformation</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="200">
+                    <img src="images/img5.png" alt="Bridal prep - natural beauty look">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Bridal Prep</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="300">
+                    <img src="images/img7.png" alt="Editorial high-fashion red lip look">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Creative</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="0">
+                    <img src="images/img8.png" alt="Bridal glam with pink roses">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Bridal</span>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="100">
+                    <img src="images/img3.png" alt="Natural bridal makeup close-up">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-category">Natural Glam</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SHOP ===================== -->
+    <section class="shop section section--dark" id="shop">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-label">Beauty Essentials</h2>
+                <h3 class="section-title">Shop</h3>
+                <p class="section-subtitle">Curated products hand-picked by Caitlin — coming soon</p>
+            </div>
+            <div class="shop-grid">
+                <div class="shop-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="shop-card-image">
+                        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="300" height="300" fill="#2D1B69"/>
+                            <rect x="100" y="80" width="100" height="140" rx="10" fill="#6B3FA0" opacity="0.4"/>
+                            <text x="150" y="260" text-anchor="middle" fill="#E8D5F5" font-family="Montserrat" font-size="13">Setting Spray</text>
+                        </svg>
+                    </div>
+                    <div class="shop-card-body">
+                        <h4>Setting Spray</h4>
+                        <p class="shop-coming-soon">Coming Soon</p>
+                    </div>
+                </div>
+                <div class="shop-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="shop-card-image">
+                        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="300" height="300" fill="#2D1B69"/>
+                            <circle cx="150" cy="140" r="50" fill="#D4AF37" opacity="0.3"/>
+                            <text x="150" y="260" text-anchor="middle" fill="#E8D5F5" font-family="Montserrat" font-size="13">Highlighter Palette</text>
+                        </svg>
+                    </div>
+                    <div class="shop-card-body">
+                        <h4>Highlighter Palette</h4>
+                        <p class="shop-coming-soon">Coming Soon</p>
+                    </div>
+                </div>
+                <div class="shop-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="shop-card-image">
+                        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="300" height="300" fill="#2D1B69"/>
+                            <rect x="120" y="60" width="60" height="160" rx="8" fill="#E8D5F5" opacity="0.3"/>
+                            <text x="150" y="260" text-anchor="middle" fill="#E8D5F5" font-family="Montserrat" font-size="13">Lip Kit</text>
+                        </svg>
+                    </div>
+                    <div class="shop-card-body">
+                        <h4>Lip Kit</h4>
+                        <p class="shop-coming-soon">Coming Soon</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Shopify Buy Button placeholder -->
+            <div id="shopify-buy-button" class="shopify-placeholder">
+                <!--
+                    Shopify Buy Button SDK will be integrated here.
+                    Add your Shopify domain and storefront access token to activate:
+
+                    <script type="text/javascript">
+                    (function () {
+                        var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+                        // Initialize with your store credentials
+                    })();
+                    </script>
+                -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section class="testimonials section" id="testimonials">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-label">Kind Words</h2>
+                <h3 class="section-title">Testimonials</h3>
+            </div>
+            <div class="testimonials-carousel" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-track" id="testimonialTrack">
+                    <div class="testimonial-slide active">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <blockquote class="testimonial-quote">
+                            &ldquo;Caitlin made me feel like an absolute queen on my wedding day. My makeup lasted from morning until the last dance. She is truly an artist!&rdquo;
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <span class="testimonial-name">Sarah M.</span>
+                            <span class="testimonial-role">Bride</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-slide">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <blockquote class="testimonial-quote">
+                            &ldquo;I've worked with many MUAs for editorials, and Caitlin is hands-down one of the best. She understands lighting, camera angles, and how to make every shot perfect.&rdquo;
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <span class="testimonial-name">Jessica L.</span>
+                            <span class="testimonial-role">Photographer</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-slide">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <blockquote class="testimonial-quote">
+                            &ldquo;I booked Caitlin for my prom and I got SO many compliments. She listened to exactly what I wanted and made it even better than I imagined!&rdquo;
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <span class="testimonial-name">Amara K.</span>
+                            <span class="testimonial-role">Prom Client</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-slide">
+                        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                        <blockquote class="testimonial-quote">
+                            &ldquo;The 1-on-1 lesson was a game-changer. Caitlin taught me techniques I'd been struggling with for years. Worth every penny!&rdquo;
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <span class="testimonial-name">Taylor R.</span>
+                            <span class="testimonial-role">Lesson Client</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-controls">
+                    <button class="testimonial-btn testimonial-btn--prev" id="testimonialPrev" aria-label="Previous testimonial">&#8592;</button>
+                    <div class="testimonial-dots" id="testimonialDots"></div>
+                    <button class="testimonial-btn testimonial-btn--next" id="testimonialNext" aria-label="Next testimonial">&#8594;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== BOOKING ===================== -->
+    <section class="booking section section--dark" id="booking">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-label">Let's Work Together</h2>
+                <h3 class="section-title">Book Your Session</h3>
+                <p class="section-subtitle">Ready to get glam? Fill out the form below and I'll get back to you within 24 hours.</p>
+            </div>
+            <div class="booking-grid">
+                <div class="booking-info" data-aos="fade-right">
+                    <div class="booking-info-card">
+                        <h4>How It Works</h4>
+                        <ol class="booking-steps">
+                            <li><span class="step-number">1</span> Fill out the inquiry form</li>
+                            <li><span class="step-number">2</span> I'll reach out to discuss your vision</li>
+                            <li><span class="step-number">3</span> We'll schedule your session</li>
+                            <li><span class="step-number">4</span> Get glam!</li>
+                        </ol>
+                    </div>
+                    <!-- Caitlin's boss photo -->
+                    <div class="booking-boss-photo" data-aos="fade-up" data-aos-delay="200">
+                        <img src="images/img9.png" alt="Caitlin on the phone, ready to book your glam session">
+                        <p class="boss-caption">This could be me talking to <span class="text-gold">you</span> about your next look</p>
+                    </div>
+                </div>
+                <form class="booking-form" id="bookingForm" data-aos="fade-left">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service Interested In</label>
+                        <select id="service" name="service" required>
+                            <option value="" disabled selected>Select a service</option>
+                            <option value="bridal">Bridal Glam</option>
+                            <option value="editorial">Editorial &amp; Photoshoot</option>
+                            <option value="special-event">Special Event</option>
+                            <option value="hair">Hair Styling</option>
+                            <option value="lesson">1-on-1 Lesson</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Preferred Date</label>
+                        <input type="date" id="date" name="date">
+                    </div>
+                    <div class="form-group form-group--full">
+                        <label for="message">Tell Me About Your Vision</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Describe your ideal look, event details, inspiration..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Send Inquiry</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3 class="footer-logo">Caked by Caitlin</h3>
+                    <p>Luxury hair and makeup artistry for your most unforgettable moments.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram" class="social-link">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+                        </a>
+                        <a href="#" aria-label="TikTok" class="social-link">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.84a8.27 8.27 0 004.76 1.5v-3.4a4.85 4.85 0 01-1-.25z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Facebook" class="social-link">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Email" class="social-link">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#shop">Shop</a></li>
+                        <li><a href="#booking">Book Now</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Bridal Glam</a></li>
+                        <li><a href="#services">Editorial</a></li>
+                        <li><a href="#services">Special Events</a></li>
+                        <li><a href="#services">Hair Styling</a></li>
+                        <li><a href="#services">1-on-1 Lessons</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Caked by Caitlin. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close lightbox">&times;</button>
+        <div class="lightbox-content" id="lightboxContent"></div>
+    </div>
+
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
