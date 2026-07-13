@@ -11,10 +11,19 @@
   ],
 
   "name": "Caked by Caitlin",
-  "kicker": "Curated by",
 
-  "$tagline_comment": "PLACEHOLDER — Caitlin is writing the real one. Swap it here, nowhere else.",
-  "tagline": "Get your stuff like me.",
+  "$tagline_comment": [
+    "This is the visible headline under the hero photo, and it IS the page's <h1>.",
+    "",
+    "The name and the 'Curated by' kicker used to sit here and were removed on purpose:",
+    "the hero shot has CAKEDBYCAITLIN printed on every card scattered across the floor,",
+    "so setting the name in type right underneath it just said the same thing twice.",
+    "",
+    "The brand name is still in the <h1> for crawlers and screen readers (visually hidden),",
+    "because search is Caitlin's only inbound channel and an <h1> of just 'Shop my favs'",
+    "tells Google nothing about who she is."
+  ],
+  "tagline": "Shop my favs",
 
   "bio": "Wedding hair & makeup artist. These are the products I actually use on my brides — nothing in here is a guess.",
 

@@ -149,9 +149,18 @@ function buildProfile() {
       : `<div class="profile-photo profile-photo--empty" aria-hidden="true"></div>`
   );
 
-  out.push(`<p class="profile-kicker">${esc(site.kicker)}</p>`);
-  out.push(`<h1 class="profile-name">${esc(site.name)}</h1>`);
-  if (site.tagline) out.push(`<p class="profile-tagline">${esc(site.tagline)}</p>`);
+  // The name and the "Curated by" kicker used to print here. Both removed: the hero shot
+  // already has CAKEDBYCAITLIN on every card scattered across the floor, so setting the
+  // name in type directly beneath it said the same thing twice.
+  //
+  // But the page still needs an <h1>, and "Shop my favs" alone tells a search engine
+  // nothing about who she is — and search is her ONLY inbound channel. So the brand name
+  // rides inside the <h1>, visible to crawlers and screen readers, hidden from sighted
+  // users who can already see it in the photo. Same content, just not shown twice.
+  out.push(
+    `<h1 class="profile-tagline"><span class="sr-only">${esc(site.name)} — </span>${esc(site.tagline || 'Shop my favs')}</h1>`
+  );
+
   if (site.bio) out.push(`<p class="profile-bio">${esc(site.bio)}</p>`);
 
   const socials = Object.entries(site.socials).filter(([k, v]) => k !== '$comment' && v);
