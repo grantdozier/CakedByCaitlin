@@ -1,0 +1,24 @@
+{
+  "$comment": [
+    "THE WALL — the gapless black-and-white grid of Caitlin's work.",
+    "",
+    "These used to be hardcoded in index.html, which meant they were the one thing on the site",
+    "nobody could change without a developer. Now they're data, so she can swap any of them by",
+    "clicking it on the live page.",
+    "",
+    "⚠️ THE COUNT MUST BE A MULTIPLE OF 6.",
+    "The grid is 3 across on mobile and 6 across on desktop. Any other count leaves a hole in",
+    "the last row — which is exactly the gap Caitlin asked us to remove. The build will refuse",
+    "to run with a bad count rather than silently ship a broken wall.",
+    "",
+    "Unused and available: images/img2.webp (before/after), images/img3.webp, images/img9.webp"
+  ],
+  "photos": [
+    { "id": "w1", "image": "images/img1.webp", "alt": "Bridal makeup — bride at her ceremony venue" },
+    { "id": "w2", "image": "images/img4.webp", "alt": "Editorial makeup — lip application close-up" },
+    { "id": "w3", "image": "images/img6.webp", "alt": "Fresh natural glam for a special event" },
+    { "id": "w4", "image": "images/img8.webp", "alt": "Bridal glam with pink roses" },
+    { "id": "w5", "image": "images/img5.webp", "alt": "Bridal prep — soft natural beauty look" },
+    { "id": "w6", "image": "images/img7.webp", "alt": "Editorial high-fashion red lip" }
+  ]
+}

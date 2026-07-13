@@ -31,6 +31,7 @@ the architecture — see "SEO is load-bearing" below.
 
 - **[docs/DESIGN.md](docs/DESIGN.md)** — why the site looks the way it does. Several choices
   look arbitrary and are not. Read this before changing anything visual.
+- **[docs/EDITOR.md](docs/EDITOR.md)** — the in-place photo editor (`?edit=1`): how it works, why it commits atomically, and why the cache-busting is load-bearing
 - **[docs/LOGINS.md](docs/LOGINS.md)** — the two accounts in the system, and the one-time setup
 - **[docs/CMS-SETUP.md](docs/CMS-SETUP.md)** — deploying the auth worker
 

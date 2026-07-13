@@ -170,3 +170,31 @@ Until you paste a Stripe link, the item shows a greyed-out **"Coming Soon"** ins
 - **Only "Live" shows on the shop.** "Needs attention" means it's hidden AND not paying you — message me.
 - **Send your shop link the same day.** Amazon's window is 24 hours.
 - **Stripe costs you nothing a month.** Only when something sells.
+
+---
+
+## Changing a photo (the easy way)
+
+You don't need to open anything complicated to swap a picture. You just tap it.
+
+1. Go to **cakedbycaitlin.com/?edit=1** — save this to your phone's home screen and call it
+   **Edit my site**.
+2. Tap **Sign in with GitHub**. You only do this once.
+3. Every photo you're allowed to change gets a dashed box around it and says **CHANGE PHOTO**.
+4. Tap the one you want to swap. Pick a new photo from your camera roll.
+5. **It changes right there on the page, straight away.** That is your real website — not a
+   preview of it. Don't like it? Tap it again and pick a different one.
+6. When you're happy, tap **SAVE CHANGES** at the bottom.
+7. It'll tell you your photos will be live in about a minute. And they will be.
+
+You can change several photos and save them all in one go.
+
+**Changed your mind before saving?** Tap **DISCARD** and nothing happens.
+
+### Products showing just a brand name on a grey square
+
+Some shops (MAC, Charlotte Tilbury, Maybelline, Caudalie) won't let us grab their pictures
+automatically. Those products show the brand name on a grey square instead.
+
+That isn't broken — it's deliberate, so the shop still looks good. But if you'd rather have a
+real picture, **tap the grey square and add a screenshot**. That's exactly what it's there for.

@@ -636,3 +636,122 @@ main {
 @media (scripting: none) {
     .reveal img { filter: none; }
 }
+
+/* ==========================================================================
+   IN-PLACE EDITOR
+
+   Only ever visible when the URL carries ?edit=1 AND Caitlin is signed in. A visitor never
+   downloads a pixel of this state — js/edit.js returns immediately without ?edit=1.
+
+   It's styled as part of the site rather than as an admin panel, because she isn't going to
+   "use a CMS" — she's going to tap a photo on her own website and change it.
+   ========================================================================== */
+
+.edit-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));  /* clear the iPhone home bar */
+
+    background: rgba(10, 10, 10, 0.92);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-top: 1px solid var(--line-mid);
+}
+
+.edit-status {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.74rem;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+}
+
+.edit-bar.is-done .edit-status { color: #7FE0A8; }
+
+.edit-actions {
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.edit-btn {
+    padding: 10px 16px;
+    border-radius: 2px;
+    background: #FFF;
+    color: #0A0A0A;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: opacity 200ms var(--ease);
+}
+
+.edit-btn:disabled { opacity: 0.45; cursor: default; }
+
+.edit-btn--ghost {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line-mid);
+}
+
+/* Keep the sticky category rail from colliding with the bar's blur. */
+body.is-editing { padding-bottom: 68px; }
+
+/* An editable photo gets a quiet dashed outline — enough to say "this one", not enough to
+   make her own site look like a wireframe. */
+.is-editable {
+    outline: 1px dashed rgba(255, 255, 255, 0.45);
+    outline-offset: -1px;
+    cursor: pointer;
+}
+
+.edit-badge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+
+    padding: 7px 12px;
+    border-radius: 2px;
+    background: rgba(10, 10, 10, 0.82);
+    color: #FFF;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+
+    opacity: 0;
+    transition: opacity 200ms var(--ease);
+}
+
+.is-editing button:hover > .edit-badge,
+.is-editing .card-media:hover > .edit-badge { opacity: 1; }
+
+/* Touch has no hover, and this is a phone-first tool — so on a touch device the badge is
+   simply always visible. Without this she'd have no idea a photo was tappable. */
+@media (hover: none) {
+    .edit-badge { opacity: 1; }
+}
+
+/* Changed, not yet saved. */
+.is-changed {
+    outline: 2px solid #7FE0A8;
+    outline-offset: -2px;
+}
+
+/* In edit mode the reveal is a distraction — she needs to see the photo she's judging, in
+   colour, not a black-and-white version of it. */
+.is-editing .reveal img { filter: none !important; }

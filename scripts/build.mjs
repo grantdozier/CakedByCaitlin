@@ -13,12 +13,38 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const readJSON = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
+
+/* Cache-bust every image with a hash of its own bytes.
+ *
+ * This matters for the in-place editor: when Caitlin replaces a photo, the new file usually
+ * lands at the SAME path (images/hero.webp). GitHub Pages serves images with a 10-minute
+ * cache, so without this she'd hit Save, watch the deploy go green, refresh, and still see
+ * the old picture — which would look exactly like the feature is broken.
+ *
+ * Hashing the contents means new bytes -> new URL -> the new photo appears the instant the
+ * deploy lands. Identical bytes keep the same URL and stay cached. */
+const versionCache = new Map();
+
+function v(relPath) {
+  if (!relPath) return relPath;
+  if (versionCache.has(relPath)) return versionCache.get(relPath);
+
+  const abs = join(ROOT, relPath);
+  let out = relPath;
+  if (existsSync(abs)) {
+    const hash = createHash('sha1').update(readFileSync(abs)).digest('hex').slice(0, 8);
+    out = `${relPath}?v=${hash}`;
+  }
+  versionCache.set(relPath, out);
+  return out;
+}
 
 /** Escape for HTML text/attribute context. Product names come from scraped pages — never trust them. */
 const esc = (s) =>
@@ -35,6 +61,18 @@ const { products } = readJSON('data/products.json');
 const { items: merch } = readJSON('data/merch.json');
 const { links } = readJSON('data/links.json');
 const { looks } = readJSON('data/looks.json');
+const { photos: workPhotos } = readJSON('data/work.json');
+
+/* The wall must have NO GAPS. It's 3 across on mobile and 6 across on desktop, so any count
+ * that isn't a multiple of 6 leaves a hole in the last row — precisely the gap Caitlin asked
+ * us to remove. Fail the build rather than silently ship a broken wall. */
+if (workPhotos.length === 0 || workPhotos.length % 6 !== 0) {
+  console.error(
+    `data/work.json has ${workPhotos.length} photos. The wall is 3 across on mobile and 6 on ` +
+      `desktop, so the count MUST be a multiple of 6 or the last row has a hole in it.`
+  );
+  process.exit(1);
+}
 
 const cats = [...categories].sort((a, b) => a.order - b.order);
 
@@ -161,6 +199,11 @@ function buildHead() {
     ``,
     `<script type="application/ld+json">${JSON.stringify(ld)}</script>`,
     itemList ? `<script type="application/ld+json">${JSON.stringify(itemList)}</script>` : '',
+    ``,
+    // The auth endpoint for the in-place editor. Same worker as /admin — one OAuth app serves
+    // both. Not a secret: it's a public OAuth start URL, and the client secret lives only in
+    // Cloudflare's encrypted env.
+    `<script>window.CBC_AUTH_BASE=${JSON.stringify(site.authBase || '')}</script>`,
   ]
     .filter((l) => l !== '')
     .join('\n    ');
@@ -176,9 +219,26 @@ function buildHero() {
   //
   // fetchpriority=high, no lazy loading: this is the LCP element.
   // The source is square, so width/height are square — no layout shift, no crop.
+  //
+  // data-edit tells the in-place editor (js/edit.js) which JSON field this image maps to and
+  // which file to overwrite. It is inert unless she's in edit mode and signed in.
   return `<button class="hero-photo reveal" type="button" aria-label="Show this photo in colour">
-      <img src="${esc(site.headshot)}" alt="${esc(site.name)} — wedding hair and makeup artist" width="1200" height="1200" fetchpriority="high" decoding="async">
+      <img src="${esc(v(site.headshot))}" alt="${esc(site.name)} — wedding hair and makeup artist" width="1200" height="1200" fetchpriority="high" decoding="async"
+           data-edit="site.headshot" data-edit-path="${esc(site.headshot)}" data-edit-label="Hero photo">
     </button>`;
+}
+
+/* ---------- the wall: a gapless black-and-white grid of her work ---------- */
+function buildWork() {
+  return workPhotos
+    .map(
+      (p) =>
+        `<button class="work-item reveal" type="button" aria-label="Show this photo in colour">` +
+        `<img src="${esc(v(p.image))}" alt="${esc(p.alt)}" loading="lazy" decoding="async" width="280" height="350"` +
+        ` data-edit="work.${esc(p.id)}.image" data-edit-path="${esc(p.image)}" data-edit-label="${esc(p.alt)}">` +
+        `</button>`
+    )
+    .join('\n            ');
 }
 
 /* ---------- "SHOP MY FAVS" — the small grey chip that opens the shop ---------- */
@@ -262,9 +322,14 @@ function productCard(p) {
    * So a missing image has to look deliberate rather than broken. The brand set in the
    * greige reads as an editorial tile. Caitlin can also just drop a screenshot in /admin,
    * which is exactly why that feature exists. */
+  const editAttrs =
+    `data-edit="product.${esc(p.id)}.image" ` +
+    `data-edit-path="${esc(p.image || `images/products/${p.id}.webp`)}" ` +
+    `data-edit-label="${esc(title)}"`;
+
   const img = p.image
-    ? `<img src="${esc(p.image)}" alt="${esc(title)}" loading="lazy" decoding="async" width="300" height="300">`
-    : `<div class="card-noimg"><span class="card-noimg-brand">${esc(p.brand || p.name)}</span></div>`;
+    ? `<img src="${esc(v(p.image))}" alt="${esc(title)}" loading="lazy" decoding="async" width="300" height="300" ${editAttrs}>`
+    : `<div class="card-noimg" ${editAttrs}><span class="card-noimg-brand">${esc(p.brand || p.name)}</span></div>`;
 
   /* Direct href. NOT a /go/ redirect — Amazon's Operating Agreement forbids obscuring the
    * referring site, and a redirect would do exactly that. Click tracking is client-side.
@@ -457,6 +522,7 @@ const BLOCKS = {
   LINKS: buildLinks(),
   PILLS: buildPills(),
   SHOP: buildShop(),
+  WORK: buildWork(),
   DISCLOSURE: esc(site.disclosure.general),
   DISCLOSURE_AMAZON: esc(site.disclosure.amazon),
 };

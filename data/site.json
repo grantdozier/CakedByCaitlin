@@ -50,6 +50,15 @@
     "ltk": ""
   },
 
+  "$authBase_comment": [
+    "The Cloudflare Worker that handles 'Sign in with GitHub'. ONE worker serves BOTH the",
+    "/admin CMS and the in-place photo editor (?edit=1) — same OAuth app, same worker.",
+    "",
+    "Leave it blank and the editor simply says 'Editing is not set up yet' instead of failing",
+    "with an opaque DNS error. Setup is ~10 minutes: see docs/LOGINS.md."
+  ],
+  "authBase": "",
+
   "seo": {
     "$comment": [
       "Caitlin has NO booking form and NO email — so search is her only inbound channel,",
