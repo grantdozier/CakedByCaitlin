@@ -1,27 +1,31 @@
 /* ==========================================================================
    CAKED BY CAITLIN
-   A creator storefront + link hub. Clean, quiet, and out of the way of the products.
 
-   THE ONE SIGNATURE: every photo of Caitlin or her work is black and white until you
-   CLICK it, and then that one turns to colour. It's the before/after she does for a
-   living, handed to the visitor. See "THE REVEAL" below.
-   Product photos are deliberately exempt: you cannot shop a colour you can't see.
+   Black site, white type. The whole page reads as one black-and-white piece WITH the hero,
+   rather than a monochrome photo pasted onto a cream website.
+
+   TYPOGRAPHY: all sans, uppercase, letterspaced. No display serif anywhere. That isn't a
+   style preference — it's her actual brand. The CAKEDBYCAITLIN cards scattered across the
+   floor of the hero shot are set in a plain uppercase sans. We match the cards.
+
+   THE SIGNATURE: every photo of Caitlin or her work is black and white until you CLICK it,
+   and then that one turns to colour. Product photos are exempt — you cannot shop a colour
+   you can't see.
    ========================================================================== */
 
 :root {
-    --bg:        #F7F6F3;   /* warm off-white, not clinical white */
-    --surface:   #FFFFFF;
-    --ink:       #111111;
-    --ink-soft:  #5C5C5C;
-    --line:      #E4E2DD;
-    --accent:    #111111;   /* the black SHOP NOW bar */
+    --bg:        #0A0A0A;   /* near-black. True #000 crushes the hero's own blacks into the page. */
+    --surface:   #FFFFFF;   /* product cards stay white — retailer cutouts are shot on white */
+    --ink:       #F4F4F4;
+    --ink-soft:  rgba(255, 255, 255, 0.58);
+    --line:      rgba(255, 255, 255, 0.14);
 
-    --serif: 'Bodoni Moda', 'Didot', Georgia, serif;
-    --sans:  'Jost', 'Helvetica Neue', Arial, sans-serif;
+    /* Inside a white product card the polarity flips back. */
+    --card-ink:      #111111;
+    --card-ink-soft: #6A6A6A;
 
-    /* Ease-in-out, not ease-out. An ease-out curve is heavily front-loaded — measured, it was
-       67% decolourised within 60ms, so the bloom SNAPPED instead of revealing. The whole point
-       is that you watch it happen. Slow start, visible middle. */
+    --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+
     --reveal: 1200ms cubic-bezier(0.65, 0.05, 0.36, 1);
 }
 
@@ -40,16 +44,12 @@ body {
 
 img { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
-
 a { color: inherit; text-decoration: none; }
 
-:focus-visible {
-    outline: 2px solid var(--ink);
-    outline-offset: 3px;
-}
+:focus-visible { outline: 2px solid #FFF; outline-offset: 3px; }
 
-/* Read by screen readers and crawlers, invisible on screen. Used to keep the brand name
-   inside the <h1> without printing it under a photo that already says it.
+/* Read by screen readers and crawlers, invisible on screen. Keeps the brand name inside the
+   <h1> without printing it on a page whose hero already says it a dozen times.
    NOT display:none — that would hide it from assistive tech too, which is the whole point. */
 .sr-only {
     position: absolute;
@@ -73,121 +73,360 @@ main {
 /* ==========================================================================
    THE REVEAL — click a face and it comes to life
 
-   The wall is black and white. You click someone, THEY turn colour. Click again
-   and they go back. That's it — it's the before/after Caitlin does for a living,
-   handed to the visitor.
-
-   Deliberately NOT on hover: if hover coloured them, nobody on a desktop would
-   ever need to click, and the interaction would evaporate. Deliberately NOT on
-   scroll either — they must sit grey until someone reaches out.
+   Deliberately NOT hover: hover gives it away for free on desktop and does nothing at all
+   on a phone, where nearly all of this traffic lands. Deliberately NOT scroll either — they
+   sit grey until someone reaches out and touches them.
 
    These are real <button>s, so Enter and Space work for free.
-
-   No-JS: the @media(scripting: none) block at the bottom ships full colour, so a
-   crawler or a JS-blocked visitor never gets stranded on a grey page.
    ========================================================================== */
-.reveal img,
-img.reveal {
+.reveal img {
     filter: grayscale(1) contrast(1.05);
     transition: filter var(--reveal), transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.reveal.is-revealed img,
-img.reveal.is-revealed {
+.reveal.is-revealed img {
     filter: grayscale(0) contrast(1);
 }
 
-/* Affordance only — a hint that it's touchable. Colour is NOT given away here. */
-.reveal:hover img,
-img.reveal:hover {
+/* Affordance only — a hint that it's touchable. Colour is NOT given away here.
+   Excludes the hero: it's full-bleed, so scaling it would push the frame off-screen. */
+.reveal:not(.hero-photo):hover img {
     transform: scale(1.04);
 }
 
 .reveal:focus-visible {
-    outline: 3px solid var(--ink);
+    outline: 3px solid #FFF;
     outline-offset: -3px;
     z-index: 1;
 }
 
 /* ==========================================================================
-   PROFILE
+   HERO — the photo owns the entire first screen. NOTHING IS CROPPED.
    ========================================================================== */
-.profile {
-    text-align: center;
-    padding: 32px 0 40px;
+.hero {
+    position: relative;
+    width: 100%;
+
+    /* svh, not vh. On iOS Safari 100vh resolves to the LARGE viewport — the one WITHOUT the
+       toolbars — so a "full screen" hero overflows by ~100px on first paint and the bottom of
+       the frame sits below the fold. svh is the small viewport: it fits WITH the toolbars
+       showing, which is the state the page actually loads in. Plain vh first as the fallback. */
+    height: 100vh;
+    height: 100svh;
+
+    overflow: hidden;
+    background: var(--bg);
 }
 
-/* SQUARE, not a circle. This is an editorial frame — hat at the top, boots at the
-   bottom, her branded cards scattered across the floor. A circular avatar would crop
-   away the two things that make the shot hers. It's also a button: click it and it
-   goes from black and white into colour. */
-.profile-photo {
+.hero-photo {
     display: block;
     width: 100%;
-    max-width: 520px;
-    aspect-ratio: 1;
-    margin: 0 auto 28px;
+    height: 100%;
     padding: 0;
+}
+
+/* object-fit: CONTAIN, not cover. Cover fills the box by cropping whatever doesn't fit —
+   and on a wide desktop, a 9:16 photo in a 16:10 window has to lose a lot of height, which
+   was slicing the top off her hat. There is no "good" crop here; the answer is not to crop.
+
+   Contain shows the ENTIRE frame — hat, cards, boots — always, at every size. On desktop
+   that leaves bars at the sides, but the page background is black and so is the photo's
+   world, so it doesn't read as letterboxing; it reads as the photo floating in the dark.
+   On a phone the source is ~9:16 and the screen is ~9:16, so it fills edge to edge anyway
+   and the bars never appear. */
+.hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.hero-empty {
+    width: 100%;
+    height: 100%;
+    background: #1A1A1A;
+}
+
+/* A full-screen photo with nothing on it reads, to some people, as the entire page. This is
+   the smallest possible hint that there's more below: a thin line that breathes.
+   DARK, not white — the bottom of this frame is pale concrete floor, where a white line is
+   invisible (confirmed by looking at the render, not by guessing). */
+.hero-cue {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    width: 1px;
+    height: 42px;
+    background: linear-gradient(to bottom, rgba(17, 17, 17, 0.85), transparent);
+    transform: translateX(-50%);
+    animation: cue 2.4s ease-in-out infinite;
+}
+
+@keyframes cue {
+    0%, 100% { opacity: 1;   transform: translateX(-50%) scaleY(1); }
+    50%      { opacity: 0.3; transform: translateX(-50%) scaleY(0.55); }
+}
+
+/* ==========================================================================
+   SHOP — "SHOP MY FAVS", thin rule, category scroller, then the products
+   ========================================================================== */
+.shop { padding: 56px 0 80px; }
+
+/* THE GREY BLOCK.
+   Rhode's signature warm greige, which is what Caitlin pointed at. It bleeds to the screen
+   edges (cancelling main's padding) so it reads as a band across the page rather than a
+   floating card — the one soft, warm surface in an otherwise black-and-white site. */
+.shop-block {
+    background: #D6D1C8;
+    color: #1A1A1A;
+    margin-inline: -20px;
+    padding: 26px 20px 22px;
+    margin-bottom: 26px;
+}
+
+/* LEFT-aligned, small, uppercase, tracked out — set like the CAKEDBYCAITLIN cards on the
+   floor of the hero shot. This is the page's <h1>; the brand name rides inside it as
+   .sr-only, because search is Caitlin's only inbound channel. */
+.shop-heading {
+    font-weight: 500;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #1A1A1A;
+    padding-bottom: 14px;
+}
+
+/* The thin divider, immediately under the heading. Dark, because it now sits on the grey. */
+.shop-rule {
+    height: 1px;
+    background: rgba(26, 26, 26, 0.22);
+}
+
+/* The socials live INSIDE the grey block — Instagram directly beneath the heading, before
+   the category filter starts. So they invert: dark on grey, not white on black. */
+.shop-block .socials {
+    justify-content: flex-start;
+    margin: 16px 0 0;
+}
+
+.shop-block .social {
+    border-color: rgba(26, 26, 26, 0.28);
+    color: #1A1A1A;
+}
+
+.shop-block .social:hover,
+.shop-block .social:focus-visible {
+    background: #1A1A1A;
+    border-color: #1A1A1A;
+    color: #D6D1C8;
+}
+
+/* Instagram keeps its real gradient. Filling the circle on hover would wash the rainbow
+   out against it, so darken the ring instead and leave the mark alone. */
+.shop-block .social--instagram:hover,
+.shop-block .social--instagram:focus-visible {
+    background: transparent;
+    border-color: rgba(26, 26, 26, 0.6);
+}
+
+/* Legally required, and it has to be encountered BEFORE the first affiliate link — a
+   footer-only disclosure does not satisfy the FTC. Quiet, but never hidden. */
+.disclosure {
+    font-size: 0.73rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    max-width: 72ch;
+}
+
+/* ---------- the category scroller ---------- */
+.pills {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 20px 18px;
+    margin: 0 -20px 26px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+}
+
+.pills::-webkit-scrollbar { display: none; }
+.pills:empty { display: none; }
+
+.pill {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 9px 18px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.pill:hover { border-color: rgba(255, 255, 255, 0.5); }
+
+.pill.is-active {
+    background: #FFF;
+    border-color: #FFF;
+    color: #0A0A0A;
+}
+
+/* ---------- category sections ---------- */
+.cat { margin-bottom: 52px; }
+.cat[hidden] { display: none; }
+
+.cat-head {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.cat-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FFF;
+    margin-bottom: 6px;
+}
+
+.cat-blurb {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+}
+
+/* ---------- product grid ---------- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* Cards stay WHITE on the black page. Retailer product cutouts are shot on white, so a dark
+   card would just be a frame around a white box. White tiles on black also keep the whole
+   page reading as black-and-white, which is the entire point. */
+.card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    color: var(--card-ink);
+    border-radius: 2px;
     overflow: hidden;
-    background: #EAE8E4;
+    transition: transform 200ms ease;
+}
+
+.card:hover { transform: translateY(-3px); }
+
+.card-media {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: var(--surface);
+}
+
+.card-media img { width: 100%; height: 100%; object-fit: contain; }
+
+.card-noimg {
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(45deg, #F4F3F1, #F4F3F1 8px, #EAE8E4 8px, #EAE8E4 16px);
+}
+
+.card-body {
+    flex: 1;
+    padding: 2px 14px 12px;
+    text-align: center;
+}
+
+.card-brand {
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--card-ink-soft);
+    margin-bottom: 4px;
+}
+
+.card-name {
+    font-weight: 400;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--card-ink);
+}
+
+/* Her voice. The reason someone buys from her rather than googling the product themselves —
+   and since April 2026 Amazon requires the commentary too, not just a bare grid of links. */
+.card-note {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--card-ink-soft);
+}
+
+.card-price {
+    margin-top: 8px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--card-ink);
+}
+
+/* INSET, not a full-bleed bar.
+   ShopMy runs a black SHOP NOW bar edge-to-edge along the bottom of the card — but their
+   page is LIGHT, so the black bar has a hard edge against it. On this black page that same
+   bar merges straight into the background and the button loses its shape entirely (saw it
+   in the render). Insetting it keeps white card on all four sides of the button, so it
+   reads as a button again. */
+.card-cta {
+    display: block;
+    margin: 0 12px 12px;
+    padding: 13px 12px;
+    border-radius: 2px;
+    background: #111;
+    color: #FFF;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: background 200ms ease;
+}
+
+.card-cta:hover,
+.card-cta:focus-visible { background: #3D3D3D; }
+
+.card-cta--disabled {
+    background: #EDEBE7;
+    color: var(--card-ink-soft);
+    cursor: default;
+}
+
+/* ---------- empty state (what ships until she pastes her first link) ---------- */
+.empty {
+    text-align: center;
+    padding: 56px 24px;
+    border: 1px dashed var(--line);
     border-radius: 2px;
 }
 
-.profile-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.empty-title {
+    font-size: 0.9rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #FFF;
+    margin-bottom: 10px;
 }
 
-.profile-photo--empty {
-    background: linear-gradient(135deg, #E8E6E1, #D8D5CF);
-}
-
-/* "Shop my favs" — this is the <h1> now, and the only type under the hero. The brand name
-   is gone from view (the photo says it) but still lives inside this element as .sr-only.
-   It carries the page, so it's set at display scale. */
-.profile-tagline {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-style: italic;
-    font-size: clamp(2.2rem, 8.5vw, 3.6rem);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin-bottom: 18px;
-}
-
-.profile-bio {
-    max-width: 460px;
-    margin: 0 auto;
-    font-size: 0.95rem;
+.empty-body {
+    font-size: 0.85rem;
     color: var(--ink-soft);
-}
-
-.socials {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 24px;
-}
-
-.social {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
-}
-
-.social svg { width: 19px; height: 19px; }
-
-.social:hover,
-.social:focus-visible {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--bg);
+    max-width: 44ch;
+    margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -206,288 +445,108 @@ img.reveal:hover {
 .linkcard {
     display: block;
     text-align: center;
-    padding: 16px 20px;
-    background: var(--surface);
+    padding: 15px 20px;
     border: 1px solid var(--line);
     border-radius: 2px;
-    transition: transform 200ms ease, box-shadow 200ms ease;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 .linkcard:hover,
 .linkcard:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    background: #FFF;
+    border-color: #FFF;
+    color: #0A0A0A;
 }
 
 .linkcard--primary {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--bg);
+    background: #FFF;
+    border-color: #FFF;
+    color: #0A0A0A;
 }
+
+.linkcard--primary:hover { background: transparent; color: #FFF; }
 
 .linkcard-title {
     display: block;
     font-weight: 500;
-    font-size: 0.9rem;
-    letter-spacing: 0.06em;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
 }
 
 .linkcard-sub {
     display: block;
-    font-size: 0.8rem;
-    color: var(--ink-soft);
-    margin-top: 2px;
+    font-size: 0.75rem;
+    opacity: 0.6;
+    margin-top: 3px;
 }
-
-.linkcard--primary .linkcard-sub { color: rgba(255, 255, 255, 0.65); }
 
 /* ==========================================================================
-   SHOP
+   SOCIALS
    ========================================================================== */
-.shop { padding-bottom: 80px; }
-
-.shop-head {
-    text-align: center;
-    max-width: 620px;
-    margin: 0 auto 32px;
-}
-
-.shop-heading {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(2rem, 7vw, 3rem);
-    margin-bottom: 8px;
-}
-
-.shop-sub {
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-}
-
-/* The legally-required bit. Sits above the first link on purpose — a footer-only
-   disclosure does not satisfy the FTC. Small, but never hidden or low-contrast. */
-.disclosure {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--line);
-    font-size: 0.8rem;
-    font-style: italic;
-    line-height: 1.7;
-    color: var(--ink-soft);
-}
-
-/* ---------- category pills ---------- */
-.pills {
+.socials {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 4px 20px 16px;
-    margin: 0 -20px 32px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 60px;
 }
 
-.pills::-webkit-scrollbar { display: none; }
-.pills:empty { display: none; }
-
-.pill {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-    padding: 9px 18px;
-    border: 1px solid var(--line);
-    border-radius: 100px;
-    background: var(--surface);
-    font-size: 0.85rem;
-    white-space: nowrap;
-    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
-}
-
-.pill:hover { border-color: var(--ink); }
-
-.pill.is-active {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--bg);
-}
-
-/* ---------- category sections ---------- */
-.cat { margin-bottom: 56px; }
-.cat[hidden] { display: none; }
-
-.cat-head {
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--line);
-}
-
-.cat-name {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: 1.7rem;
-    margin-bottom: 4px;
-}
-
-.cat-blurb {
-    font-size: 0.875rem;
-    color: var(--ink-soft);
-    max-width: 60ch;
-}
-
-/* ---------- product grid ---------- */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-}
-
-.card {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    overflow: hidden;
-    transition: box-shadow 200ms ease;
-}
-
-.card:hover { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.07); }
-
-/* Product shots sit on white, uncropped — the retailer's cutout is the whole point.
-   Deliberately NOT greyscale: you cannot shop a colour you can't see. */
-.card-media {
-    aspect-ratio: 1;
+.social {
     display: grid;
     place-items: center;
-    padding: 18px;
-    background: var(--surface);
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
-.card-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.social svg { width: 19px; height: 19px; }
+
+.social:hover,
+.social:focus-visible {
+    background: #FFF;
+    border-color: #FFF;
+    color: #0A0A0A;
 }
 
-.card-noimg {
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(45deg, #F2F1EE, #F2F1EE 8px, #EAE8E4 8px, #EAE8E4 16px);
-}
-
-.card-body {
-    flex: 1;
-    padding: 4px 16px 16px;
-    text-align: center;
-}
-
-.card-brand {
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 4px;
-}
-
-.card-name {
-    font-weight: 400;
-    font-size: 0.95rem;
-    line-height: 1.35;
-}
-
-/* Her voice. This is the whole reason someone buys from her rather than searching
-   the product themselves — and since April 2026 Amazon requires the commentary too. */
-.card-note {
-    margin-top: 8px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
-}
-
-.card-price {
-    margin-top: 8px;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.card-cta {
-    display: block;
-    padding: 15px 12px;
-    background: var(--accent);
-    color: #FFF;
-    text-align: center;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    transition: background 200ms ease;
-}
-
-.card-cta:hover,
-.card-cta:focus-visible { background: #333; }
-
-.card-cta--disabled {
-    background: #E4E2DD;
-    color: var(--ink-soft);
-    cursor: default;
-}
-
-/* ---------- empty state (what ships until she pastes her first link) ---------- */
-.empty {
-    text-align: center;
-    padding: 56px 24px;
-    border: 1px dashed var(--line);
-    border-radius: 2px;
-}
-
-.empty-title {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    margin-bottom: 8px;
-}
-
-.empty-body {
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-    max-width: 42ch;
-    margin: 0 auto;
+/* Instagram keeps its real gradient mark. Don't flood the circle white on hover — that
+   would wash the rainbow out against it. Light the ring instead. */
+.social--instagram:hover,
+.social--instagram:focus-visible {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.55);
 }
 
 /* ==========================================================================
-   WORK
+   WORK — a seamless wall, black and white until you tap a face
    ========================================================================== */
-.work {
-    padding: 72px 0;
-    border-top: 1px solid var(--line);
-    text-align: center;
-}
+.work { padding: 24px 0 72px; }
 
 .work-heading {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(2rem, 7vw, 3rem);
-    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #FFF;
+    padding-bottom: 14px;
 }
 
-.work-sub {
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-    margin-bottom: 32px;
+.work-rule {
+    height: 1px;
+    background: var(--line);
+    margin-bottom: 26px;
 }
 
-/* A seamless wall. No gaps, no rounded corners, no gutters — the photos butt
-   straight up against each other and read as one surface. That's the point:
-   it's a single black-and-white sheet that you light up a face at a time. */
+/* No gaps, no rounded corners, no gutters. The photos butt straight against each other and
+   read as one surface — a single sheet you light up a face at a time. */
 .work-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
 
-    /* Bleed to the screen edges on mobile, cancelling main's 20px padding.
-       A gapless wall with a margin around it isn't a wall. */
+    /* Bleed to the screen edges, cancelling main's padding. A gapless wall with a margin
+       around it is not a wall. */
     margin-inline: -20px;
     width: calc(100% + 40px);
 }
@@ -497,84 +556,46 @@ img.reveal:hover {
     padding: 0;
     aspect-ratio: 4 / 5;
     overflow: hidden;
-    background: #EAE8E4;
-    border-radius: 0;
+    background: #1A1A1A;
 
-    /* Kills the sub-pixel hairlines that show between grid cells at fractional
-       widths — without this you get faint background-coloured seams on the wall. */
-    box-shadow: 0 0 0 0.5px #EAE8E4;
+    /* Kills the sub-pixel hairlines that otherwise show between grid cells at fractional
+       widths — without this, faint seams appear across the wall. */
+    box-shadow: 0 0 0 0.5px #1A1A1A;
 }
 
-.work-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ==========================================================================
-   ABOUT
-   ========================================================================== */
-.about {
-    padding: 72px 0;
-    border-top: 1px solid var(--line);
-    max-width: 620px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.about-heading {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(1.8rem, 6vw, 2.6rem);
-    margin-bottom: 20px;
-}
-
-.about p {
-    color: var(--ink-soft);
-    margin-bottom: 14px;
-    font-size: 0.98rem;
-}
+.work-item img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ==========================================================================
    FOOTER
    ========================================================================== */
 .footer {
-    padding: 48px 20px 56px;
+    padding: 44px 20px 52px;
     text-align: center;
     border-top: 1px solid var(--line);
 }
 
-.footer-name {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    margin-bottom: 14px;
-}
-
 .footer-disclosure {
-    max-width: 46ch;
-    margin: 0 auto 16px;
-    font-size: 0.75rem;
-    font-style: italic;
+    max-width: 54ch;
+    margin: 0 auto 14px;
+    font-size: 0.7rem;
     line-height: 1.6;
     color: var(--ink-soft);
 }
 
 .footer-copy {
-    font-size: 0.75rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--ink-soft);
 }
-
 
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
 @media (min-width: 700px) {
     main { padding: 0 32px; }
-    .grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .profile { padding: 88px 0 48px; }
-    .profile-photo { width: 150px; height: 150px; }
-
-    /* Stays gapless — just re-bleed against the wider padding. */
+    .shop-block { margin-inline: -32px; padding: 30px 32px 24px; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .work-grid { margin-inline: -32px; width: calc(100% + 64px); }
 }
 
@@ -585,9 +606,8 @@ img.reveal:hover {
 
 /* ==========================================================================
    REDUCED MOTION
-   Kill the movement, KEEP the colour. Someone who asked for less motion still
-   wants to see what shade the lipstick is — so we hold the reveal's endpoint,
-   not its start.
+   Kill the movement, KEEP the colour. Someone who asked for less motion still wants to see
+   what shade the lipstick is — so hold the reveal's endpoint, not its start.
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -596,21 +616,13 @@ img.reveal:hover {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-
-    .reveal img,
-    img.reveal {
-        filter: none;
-    }
 }
 
 /* ==========================================================================
    NO JAVASCRIPT
-   The reveal is JS-driven, so without JS the photos would sit grey forever.
-   Ship them in colour instead. A crawler must never see a grey page.
+   The reveal is JS-driven, so without JS the photos would sit grey forever. Ship them in
+   colour instead — a crawler must never see a grey page.
    ========================================================================== */
 @media (scripting: none) {
-    .reveal img,
-    img.reveal {
-        filter: none;
-    }
+    .reveal img { filter: none; }
 }

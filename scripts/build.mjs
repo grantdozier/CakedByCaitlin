@@ -47,13 +47,32 @@ const activeMerch = merch.filter((m) => m.status === 'live' || m.stripeUrl);
 
 /* Any social left blank in site.json is dropped entirely. The old site shipped four icons all
  * pointing at href="#" — they did nothing and threw a console error. Empty means gone, not broken. */
+/* Instagram gets its real gradient — the rainbow mark, not a flat glyph. Everything else is
+ * a monochrome path that inherits currentColor. The IG entry is therefore a FULL <svg>
+ * override rather than a path fragment, because it needs its own <defs>. */
 const SOCIAL_ICONS = {
-  instagram: '<path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2m0 2.1c-3.1 0-3.5 0-4.7.08-1.1.05-1.7.24-2.1.4-.5.2-.9.44-1.3.84-.4.4-.64.8-.84 1.3-.16.4-.35 1-.4 2.1C2.58 10.2 2.58 10.6 2.58 12s0 1.8.08 3c.05 1.1.24 1.7.4 2.1.2.5.44.9.84 1.3.4.4.8.64 1.3.84.4.16 1 .35 2.1.4 1.2.08 1.6.08 4.7.08s3.5 0 4.7-.08c1.1-.05 1.7-.24 2.1-.4.5-.2.9-.44 1.3-.84.4-.4.64-.8.84-1.3.16-.4.35-1 .4-2.1.08-1.2.08-1.6.08-3s0-1.8-.08-3c-.05-1.1-.24-1.7-.4-2.1-.2-.5-.44-.9-.84-1.3-.4-.4-.8-.64-1.3-.84-.4-.16-1-.35-2.1-.4-1.2-.08-1.6-.08-4.7-.08z"/><path d="M12 7.1a4.9 4.9 0 100 9.8 4.9 4.9 0 000-9.8zm0 8.08a3.18 3.18 0 110-6.36 3.18 3.18 0 010 6.36z"/><circle cx="17.1" cy="6.9" r="1.15"/>',
   tiktok: '<path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.84a8.27 8.27 0 004.76 1.5v-3.4a4.85 4.85 0 01-1-.25z"/>',
   facebook: '<path d="M22 12a10 10 0 10-11.56 9.87v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.88h-2.33v6.99A10 10 0 0022 12z"/>',
-  pinterest: '<path d="M12 2a10 10 0 00-3.65 19.31c-.09-.78-.17-1.98.03-2.83.18-.78 1.19-4.97 1.19-4.97s-.3-.6-.3-1.5c0-1.4.81-2.45 1.83-2.45.86 0 1.28.65 1.28 1.43 0 .87-.56 2.17-.84 3.38-.24 1.01.5 1.84 1.5 1.84 1.8 0 3.19-1.9 3.19-4.65 0-2.43-1.75-4.13-4.24-4.13-2.89 0-4.59 2.17-4.59 4.4 0 .87.34 1.81.76 2.32a.3.3 0 01.07.29l-.28 1.15c-.05.19-.15.23-.35.14-1.3-.61-2.11-2.5-2.11-4.03 0-3.28 2.38-6.29 6.87-6.29 3.6 0 6.4 2.57 6.4 6 0 3.58-2.25 6.46-5.39 6.46-1.05 0-2.04-.55-2.38-1.19l-.65 2.470c-.23.9-.86 2.03-1.28 2.72A10 10 0 1012 2z"/>',
+  pinterest: '<path d="M12 2a10 10 0 00-3.65 19.31c-.09-.78-.17-1.98.03-2.83.18-.78 1.19-4.97 1.19-4.97s-.3-.6-.3-1.5c0-1.4.81-2.45 1.83-2.45.86 0 1.28.65 1.28 1.43 0 .87-.56 2.17-.84 3.38-.24 1.01.5 1.84 1.5 1.84 1.8 0 3.19-1.9 3.19-4.65 0-2.43-1.75-4.13-4.24-4.13-2.89 0-4.59 2.17-4.59 4.4 0 .87.34 1.81.76 2.32a.3.3 0 01.07.29l-.28 1.15c-.05.19-.15.23-.35.14-1.3-.61-2.11-2.5-2.11-4.03 0-3.28 2.38-6.29 6.87-6.29 3.6 0 6.4 2.57 6.4 6 0 3.58-2.25 6.46-5.39 6.46-1.05 0-2.04-.55-2.38-1.19l-.65 2.47c-.23.9-.86 2.03-1.28 2.72A10 10 0 1012 2z"/>',
   youtube: '<path d="M23 12s0-3.2-.4-4.74a2.5 2.5 0 00-1.77-1.77C19.28 5.1 12 5.1 12 5.1s-7.28 0-8.83.4c-.85.22-1.53.9-1.76 1.76C1 8.8 1 12 1 12s0 3.2.41 4.74c.23.85.9 1.53 1.76 1.76 1.55.4 8.83.4 8.83.4s7.28 0 8.83-.4a2.5 2.5 0 001.77-1.76C23 15.2 23 12 23 12zM9.7 15.02V8.98L15.9 12l-6.2 3.02z"/>',
 };
+
+/* The real Instagram gradient. Stroked outline, not a solid fill — the outline is the
+ * recognisable mark, and it reads cleanly at 19px against black. */
+const INSTAGRAM_SVG = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#FFD600"/>
+            <stop offset="0.25" stop-color="#FF7A00"/>
+            <stop offset="0.5" stop-color="#FF0069"/>
+            <stop offset="0.75" stop-color="#D300C5"/>
+            <stop offset="1" stop-color="#7638FA"/>
+          </linearGradient>
+        </defs>
+        <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4" stroke="url(#ig-grad)" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.4" stroke="url(#ig-grad)" stroke-width="2"/>
+        <circle cx="17.6" cy="6.4" r="1.4" fill="url(#ig-grad)"/>
+      </svg>`;
 
 /* ---------- head: SEO, OG, JSON-LD ---------- */
 function buildHead() {
@@ -131,51 +150,58 @@ function buildHead() {
     .join('\n    ');
 }
 
-/* ---------- profile: headshot, name, socials ---------- */
-function buildProfile() {
-  const out = [];
+/* ---------- hero: the full-bleed photo that owns the first screen ---------- */
+function buildHero() {
+  if (!site.headshot) return `<div class="hero-empty" aria-hidden="true"></div>`;
 
-  // A SQUARE hero, not a circle avatar — it's an editorial shot, and a circle would
-  // crop the hat and the boots out of the only frame that has both.
+  // A real <button>, because clicking it turns it from black and white into colour —
+  // the same interaction as the wall of her work — and that has to be reachable from a
+  // keyboard. Buttons give us Enter and Space for free.
   //
-  // A real <button>, because clicking it turns it from black and white into colour
-  // (the same interaction as the wall of her work) and that has to be reachable from
-  // a keyboard. Buttons give us Enter/Space for free.
-  out.push(
-    site.headshot
-      ? `<button class="profile-photo reveal" type="button" aria-label="Show this photo in colour">
-      <img src="${esc(site.headshot)}" alt="${esc(site.name)} — hair and makeup artist" width="1120" height="1120" fetchpriority="high" decoding="async">
-    </button>`
-      : `<div class="profile-photo profile-photo--empty" aria-hidden="true"></div>`
-  );
+  // fetchpriority=high and NO lazy loading: this is the LCP element. It is the first and
+  // only thing on screen, so nothing should defer it.
+  return `<button class="hero-photo reveal" type="button" aria-label="Show this photo in colour">
+      <img src="${esc(site.headshot)}" alt="${esc(site.name)} — wedding hair and makeup artist" width="1080" height="1920" fetchpriority="high" decoding="async">
+    </button>`;
+}
 
-  // The name and the "Curated by" kicker used to print here. Both removed: the hero shot
-  // already has CAKEDBYCAITLIN on every card scattered across the floor, so setting the
-  // name in type directly beneath it said the same thing twice.
+/* ---------- "SHOP MY FAVS" — the heading that opens the shop ---------- */
+function buildHeading() {
+  // The brand name, the "Curated by" kicker and the bio all used to print here. All gone:
+  // Caitlin wants it minimal, and the hero already has CAKEDBYCAITLIN printed on every card
+  // scattered across the floor — setting the name in type beneath it said the same thing twice.
   //
-  // But the page still needs an <h1>, and "Shop my favs" alone tells a search engine
-  // nothing about who she is — and search is her ONLY inbound channel. So the brand name
-  // rides inside the <h1>, visible to crawlers and screen readers, hidden from sighted
-  // users who can already see it in the photo. Same content, just not shown twice.
-  out.push(
-    `<h1 class="profile-tagline"><span class="sr-only">${esc(site.name)} — </span>${esc(site.tagline || 'Shop my favs')}</h1>`
-  );
+  // The page still needs an <h1> though, and "Shop my favs" on its own tells a search engine
+  // nothing about who she is — and search is her ONLY inbound channel (no booking form, no
+  // email, no phone). So the brand name rides inside the <h1> for crawlers and screen readers,
+  // hidden from sighted visitors who can already see it in the photo.
+  return `<h1 class="shop-heading"><span class="sr-only">${esc(site.name)} — </span>${esc(site.tagline || 'Shop my favs')}</h1>`;
+}
 
-  if (site.bio) out.push(`<p class="profile-bio">${esc(site.bio)}</p>`);
-
+/* ---------- socials ---------- */
+function buildSocials() {
+  // Any handle left blank in site.json is dropped entirely. The old site shipped four icons
+  // all pointing at href="#" — they did nothing and threw a console error. Empty means gone.
   const socials = Object.entries(site.socials).filter(([k, v]) => k !== '$comment' && v);
-  if (socials.length) {
-    const icons = socials
-      .map(
-        ([k, url]) =>
-          `<a class="social" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(k)}" data-track="social:${esc(k)}">` +
-          `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${SOCIAL_ICONS[k] || ''}</svg></a>`
-      )
-      .join('\n      ');
-    out.push(`<div class="socials">\n      ${icons}\n    </div>`);
-  }
+  if (!socials.length) return `<!-- No social handles yet. Add them in /admin -> Site Settings. -->`;
 
-  return out.join('\n    ');
+  const icons = socials
+    .map(([k, url]) => {
+      // Instagram ships its own full <svg> (it carries a gradient <defs>); the rest are
+      // monochrome paths inheriting currentColor.
+      const glyph =
+        k === 'instagram'
+          ? INSTAGRAM_SVG
+          : `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${SOCIAL_ICONS[k] || ''}</svg>`;
+
+      return (
+        `<a class="social social--${esc(k)}" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(k)}" data-track="social:${esc(k)}">` +
+        `${glyph}</a>`
+      );
+    })
+    .join('\n      ');
+
+  return `<div class="socials">\n      ${icons}\n    </div>`;
 }
 
 /* ---------- freeform link cards ---------- */
@@ -327,29 +353,27 @@ function buildLooks() {
     <meta property="og:description" content="${esc(look.intro || 'Everything I used on you today.')}">
     ${site.seo.ogImage && existsSync(join(ROOT, site.seo.ogImage)) ? `<meta property="og:image" content="${esc(new URL(site.seo.ogImage, url).href)}">` : ''}
 
+    <meta name="theme-color" content="#0A0A0A">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
-    <noscript><style>.reveal img, img.reveal { filter: none !important; }</style></noscript>
+    <noscript><style>.reveal img { filter: none !important; }</style></noscript>
 </head>
 <body>
 <main>
-    <header class="profile">
-        <p class="profile-kicker">Everything I used on you</p>
-        <h1 class="profile-name">${esc(look.title)}</h1>
-        ${look.intro ? `<p class="profile-bio">${esc(look.intro)}</p>` : ''}
-    </header>
-
     <section class="shop">
-        <div class="shop-head">
-            <p class="disclosure">
-                ${esc(site.disclosure.general)}
-                <br>
-                ${esc(site.disclosure.amazon)}
-            </p>
-        </div>
+        <h1 class="shop-heading">${esc(look.title)}</h1>
+        <div class="shop-rule"></div>
+
+        ${look.intro ? `<p class="disclosure" style="color:#F4F4F4">${esc(look.intro)}</p>` : ''}
+
+        <p class="disclosure">
+            ${esc(site.disclosure.general)}
+            ${esc(site.disclosure.amazon)}
+        </p>
+
         <div class="shop-body">
             <div class="grid">
                 ${picked.map(productCard).join('\n                ')}
@@ -357,16 +381,16 @@ function buildLooks() {
         </div>
     </section>
 
-    <section class="about">
-        <h2 class="about-heading">Thank you.</h2>
-        <p>It was a joy doing your hair and makeup. Everything above is exactly what I used — no substitutions.</p>
-        <p><a class="linkcard linkcard--primary" href="../index.html" style="margin-top:16px">See the full edit</a></p>
-    </section>
+    <nav class="links">
+        <a class="linkcard linkcard--primary" href="../index.html">
+            <span class="linkcard-title">See the full edit</span>
+        </a>
+    </nav>
 </main>
 
 <footer class="footer">
-    <p class="footer-name">${esc(site.name)}</p>
     <p class="footer-disclosure">${esc(site.disclosure.general)}</p>
+    <p class="footer-copy">${esc(site.name)}</p>
 </footer>
 
 <script src="../js/main.js" defer></script>
@@ -395,7 +419,9 @@ ${urls.map((u) => `  <url><loc>${esc(u)}</loc></url>`).join('\n')}
 /* ---------- splice into index.html ---------- */
 const BLOCKS = {
   HEAD: buildHead(),
-  PROFILE: buildProfile(),
+  HERO: buildHero(),
+  HEADING: buildHeading(),
+  SOCIALS: buildSocials(),
   LINKS: buildLinks(),
   PILLS: buildPills(),
   SHOP: buildShop(),
