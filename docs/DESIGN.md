@@ -94,19 +94,39 @@ Full bleed. The photo owns the entire first screen; the site begins beneath it.
 overflows by ~100px on first paint and the bottom of the frame sits below the fold. `svh` is
 the small viewport: it fits *with* the toolbars showing, which is the state the page loads in.
 
-**`object-fit: contain`. NOTHING IS CROPPED. This is the important one.**
+**The hat and the boots are never cropped. Which way the crop falls depends on the shape of
+the screen — that's the whole trick.**
 
-The source is 941×1672 — almost exactly 9:16.
+The source is 1080×1920: a 9:16 frame, ratio 0.5625.
 
-- On a **phone** (~9:16), the whole frame fills the screen edge to edge with no crop at all.
-- On a **wide desktop**, a 9:16 photo in a 16:10 window has to lose a lot of height. An
-  earlier build used `object-fit: cover` and tuned `object-position` to pick *what* to
-  sacrifice — and it sliced the top off her hat. There is no good crop here. **The answer is
-  not to crop.**
+**Phones are TALLER than that.** An iPhone is 19.5:9 — ratio ~0.46. So `object-fit: cover`
+scales the photo to fill the height, and the overflow spills off the **left and right**,
+trimming ~9% of empty concrete from each side. The hat and the boots are untouched, and the
+photo fills the screen edge to edge, top to bottom. Which is what Caitlin asked for.
 
-`contain` shows the entire frame — hat, cards, boots — at every size. On desktop that leaves
-bars at the sides, but the page is black and so is the photo's world, so it doesn't read as
-letterboxing. It reads as the photo floating in the dark.
+**Wide desktops are the exact opposite.** There, `cover` fills the *width*, and the overflow
+spills off the **top and bottom** — which is precisely what was slicing her hat off. There is
+no good crop of a 9:16 photo in a 16:10 window, so we don't crop: `contain` shows the entire
+frame with black at the sides. The page is black and so is the photo's world, so it reads as
+the photo floating in the dark rather than as letterboxing.
+
+The breakpoint is the photo's own aspect ratio:
+
+```css
+.hero-photo img { object-fit: cover; }        /* narrower than 9:16 → crop the sides */
+
+@media (min-aspect-ratio: 9/16) {
+    .hero-photo img { object-fit: contain; }  /* wider → don't crop the hat */
+}
+```
+
+Verified across iPhone 14 Pro, iPhone SE, Pixel 7, iPad portrait and desktop: **zero
+top/bottom crop on every one.**
+
+Two wrong answers were tried first, and both are instructive. A square crop threw the hat and
+the boots away outright. Then `cover` with a tuned `object-position` — which just meant
+*choosing* what to amputate. **If you find yourself picking a focal point, you are already
+solving the wrong problem.**
 
 **The scroll cue is dark, not white.** The bottom of the frame is pale concrete floor. A
 white line there is completely invisible. (Confirmed by looking at the render, not by

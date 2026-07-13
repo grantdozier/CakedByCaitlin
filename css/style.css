@@ -125,19 +125,31 @@ main {
     padding: 0;
 }
 
-/* object-fit: CONTAIN, not cover. Cover fills the box by cropping whatever doesn't fit —
-   and on a wide desktop, a 9:16 photo in a 16:10 window has to lose a lot of height, which
-   was slicing the top off her hat. There is no "good" crop here; the answer is not to crop.
+/* WHICH WAY THE CROP FALLS DEPENDS ON THE SHAPE OF THE SCREEN. This is the whole trick.
+   The source is 1080x1920 — a 9:16 frame (ratio 0.5625).
 
-   Contain shows the ENTIRE frame — hat, cards, boots — always, at every size. On desktop
-   that leaves bars at the sides, but the page background is black and so is the photo's
-   world, so it doesn't read as letterboxing; it reads as the photo floating in the dark.
-   On a phone the source is ~9:16 and the screen is ~9:16, so it fills edge to edge anyway
-   and the bars never appear. */
+   PHONES are TALLER than that (an iPhone is 19.5:9, ratio ~0.46). So `cover` scales the photo
+   to fill the height and the overflow spills off the LEFT AND RIGHT — it trims ~9% of empty
+   concrete from each side. The hat and the boots are completely untouched. The photo fills
+   the screen edge to edge and top to bottom, which is what Caitlin asked for.
+
+   WIDE DESKTOPS are the opposite: `cover` there fills the width and the overflow spills off
+   the TOP AND BOTTOM, which is what was slicing her hat off. There is no good crop of a 9:16
+   photo in a 16:10 window, so we don't crop — `contain` shows the entire frame with black at
+   the sides. The page is black and so is the photo's world, so it reads as the photo floating
+   in the dark rather than as letterboxing.
+
+   Breakpoint is the photo's own aspect ratio: narrower than 9/16 -> cover; wider -> contain. */
 .hero-photo img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+}
+
+@media (min-aspect-ratio: 9/16) {
+    .hero-photo img {
+        object-fit: contain;
+    }
 }
 
 .hero-empty {
