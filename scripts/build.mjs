@@ -250,9 +250,21 @@ function buildPills() {
 /* ---------- one product card ---------- */
 function productCard(p) {
   const title = [p.brand, p.name].filter(Boolean).join(' ');
+
+  /* NO IMAGE? Render a typographic tile, not an empty box.
+   *
+   * This is not a rare edge case — it is permanent. Sephora, MAC, Charlotte Tilbury and
+   * Maybelline all sit behind bot protection and cannot be scraped, ever. (Measured: of 14
+   * real product URLs run through enrich in CI, the 3 that returned an image were all the
+   * brand's own site; every big-retailer URL failed.) The links themselves work perfectly
+   * for a human — it's only the scraper they refuse.
+   *
+   * So a missing image has to look deliberate rather than broken. The brand set in the
+   * greige reads as an editorial tile. Caitlin can also just drop a screenshot in /admin,
+   * which is exactly why that feature exists. */
   const img = p.image
     ? `<img src="${esc(p.image)}" alt="${esc(title)}" loading="lazy" decoding="async" width="300" height="300">`
-    : `<div class="card-noimg" aria-hidden="true"></div>`;
+    : `<div class="card-noimg"><span class="card-noimg-brand">${esc(p.brand || p.name)}</span></div>`;
 
   /* Direct href. NOT a /go/ redirect — Amazon's Operating Agreement forbids obscuring the
    * referring site, and a redirect would do exactly that. Click tracking is client-side.

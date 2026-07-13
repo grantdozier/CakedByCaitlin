@@ -47,10 +47,27 @@ const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
   'Chrome/124.0.0.0 Safari/537.36';
 
+/* MEASURED IN CI against 14 real product URLs — this is not speculation:
+ *
+ *   WORKS    the brand's own site — rhodeskin.com, byoma.com, anastasiabeverlyhills.com
+ *   BLOCKED  sephora.com, maccosmetics.com, charlottetilbury.com, maybelline.com, caudalie.com
+ *
+ * Sephora is behind serious bot protection and will NEVER scrape, whatever headers we send.
+ * DO NOT keep bolting on headers trying to beat it: that is an arms race we lose, and it
+ * shades into circumventing an anti-bot control we have no business circumventing.
+ *
+ * The real answer is the fallback. A blocked product still publishes with a working link and
+ * a typographic tile, and Caitlin can drop a screenshot in /admin. That screenshot path exists
+ * precisely because this one has a permanent ceiling. */
 const FETCH_HEADERS = {
   'User-Agent': UA,
-  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
   'Accept-Language': 'en-US,en;q=0.9',
+  'Upgrade-Insecure-Requests': '1',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'none',
+  'Sec-Fetch-User': '?1',
   'Cache-Control': 'no-cache',
 };
 

@@ -324,10 +324,27 @@ main {
 
 .card:hover .card-media img { transform: scale(1.04); }
 
+/* The no-image tile. This is PERMANENT, not a stopgap: Sephora, MAC, Charlotte Tilbury and
+   Maybelline all block scrapers, so those products will never auto-fetch a photo. It has to
+   look deliberate. Brand name set in the greige — an editorial type tile, not a broken box. */
 .card-noimg {
+    display: grid;
+    place-items: center;
     width: 100%;
     height: 100%;
-    background: #F4F3F1;
+    padding: 12px;
+    background: var(--stone);
+}
+
+.card-noimg-brand {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.5;
+    color: #14110F;
+    opacity: 0.62;
 }
 
 .card-body {

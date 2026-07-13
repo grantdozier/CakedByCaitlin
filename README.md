@@ -84,6 +84,36 @@ She pastes a link. Everything else is automatic.
 
 ---
 
+## ⚠️ The scraper has a permanent ceiling. Know this before you promise anything.
+
+Enrichment auto-fills name, brand, price and image from the product page. **It does not work
+on every retailer, and it never will.**
+
+Measured in CI against 14 real product URLs:
+
+| Retailer | Result |
+|---|---|
+| The brand's own site — `rhodeskin.com`, `byoma.com`, `anastasiabeverlyhills.com` | ✅ **Works.** Name, price, and image all pulled. |
+| `sephora.com` | ❌ **Blocked.** Serious bot protection. Will never scrape. |
+| `maccosmetics.com`, `charlottetilbury.com`, `maybelline.com`, `caudalie.com` | ❌ Blocked. |
+
+**Do not try to beat this by piling on headers.** It's an arms race we lose, and it shades
+into circumventing an anti-bot control we have no business circumventing.
+
+**It doesn't matter much, because the failure is graceful:**
+
+- The **link still works** — those pages are fine for a human, it's only the *scraper* they
+  refuse. A working link with no photo beats a broken link every time.
+- The card renders a **typographic tile** (the brand set in greige) instead of an empty box.
+  It reads as an editorial choice, not a bug.
+- Caitlin can **drop a screenshot** in `/admin` and it's used as the product image. That
+  feature exists precisely because this path has a ceiling.
+
+Prefer linking to the **brand's own site** where possible. It scrapes cleanly, and it's
+usually the right ShopMy affiliate target anyway.
+
+---
+
 ## Product lifecycle
 
 A product only becomes visible once it can actually earn money.
