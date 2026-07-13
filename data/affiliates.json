@@ -19,6 +19,25 @@
     "shopMyUserId": ""
   },
 
+  "$demoMode_comment": [
+    "TEMPORARY. Set this to false the moment Caitlin's ShopMy / Amazon accounts are live.",
+    "",
+    "Normally a product stays HIDDEN unless it has a real affiliate link, because a card that",
+    "renders beautifully and earns $0 is the failure mode this whole system exists to prevent.",
+    "",
+    "But she has no accounts yet, so that rule would leave the shop permanently empty and there",
+    "would be nothing to look at or judge. demoMode lets sample products render using their RAW",
+    "retailer URL instead.",
+    "",
+    "These are real links to real products. They are simply not earning her anything yet.",
+    "NOTHING IS FAKED — we never invent an affiliate URL. The build prints a loud warning for",
+    "every unmonetised product on every run, and /admin flags them.",
+    "",
+    "Once the accounts exist: fill in the IDs above, set this to false, and re-run enrich. It",
+    "retries needs-attention products and will affiliate-ize all of them automatically."
+  ],
+  "demoMode": true,
+
   "rules": {
     "amazon": {
       "domains": ["amazon.com", "www.amazon.com", "amzn.to", "a.co"],

@@ -17,16 +17,23 @@
     --bg:        #0A0A0A;   /* near-black. True #000 crushes the hero's own blacks into the page. */
     --surface:   #FFFFFF;   /* product cards stay white — retailer cutouts are shot on white */
     --ink:       #F4F4F4;
-    --ink-soft:  rgba(255, 255, 255, 0.58);
-    --line:      rgba(255, 255, 255, 0.14);
+    --ink-soft:  rgba(255, 255, 255, 0.52);
+
+    /* Hairlines. Deliberately almost invisible — they should suggest a boundary, not draw
+       one. If you can clearly see a border on this site, it's too strong. */
+    --line:      rgba(255, 255, 255, 0.07);
+    --line-mid:  rgba(255, 255, 255, 0.13);
+
+    --stone:     #D6D1C8;   /* the one warm surface: Rhode's greige */
 
     /* Inside a white product card the polarity flips back. */
     --card-ink:      #111111;
-    --card-ink-soft: #6A6A6A;
+    --card-ink-soft: #737373;
 
     --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
 
     --reveal: 1200ms cubic-bezier(0.65, 0.05, 0.36, 1);
+    --ease:   cubic-bezier(0.22, 1, 0.36, 1);   /* the one easing curve. Use it everywhere. */
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -101,143 +108,86 @@ main {
 }
 
 /* ==========================================================================
-   HERO — the photo owns the entire first screen. NOTHING IS CROPPED.
+   HERO — a SQUARE photo at the top. Not a full-screen takeover.
+
+   It's sized so that SHOP MY FAVS and the start of the category rail are visible on load,
+   without scrolling. The shop is the product; the photo introduces it, it doesn't block it.
+
+   NOTHING IS CROPPED, at any size, ever. The source image is already square and already
+   framed the way she wants it. That's the actual solution: earlier versions cropped a tall
+   9:16 frame down to a square and lost the hat, then tried to rescue it with a tuned
+   object-position — which just meant *choosing* what to amputate. A square source removes
+   the problem instead of managing it.
    ========================================================================== */
 .hero {
-    position: relative;
-    width: 100%;
-
-    /* svh, not vh. On iOS Safari 100vh resolves to the LARGE viewport — the one WITHOUT the
-       toolbars — so a "full screen" hero overflows by ~100px on first paint and the bottom of
-       the frame sits below the fold. svh is the small viewport: it fits WITH the toolbars
-       showing, which is the state the page actually loads in. Plain vh first as the fallback. */
-    height: 100vh;
-    height: 100svh;
-
-    overflow: hidden;
-    background: var(--bg);
+    padding: 0;
 }
 
 .hero-photo {
     display: block;
     width: 100%;
-    height: 100%;
+    max-width: 620px;      /* on desktop it stays a photograph, not a billboard */
+    margin: 0 auto;
     padding: 0;
+    aspect-ratio: 1;       /* square source, square box: no crop, no layout shift */
+    overflow: hidden;
+    background: #141414;
 }
 
-/* WHICH WAY THE CROP FALLS DEPENDS ON THE SHAPE OF THE SCREEN. This is the whole trick.
-   The source is 1080x1920 — a 9:16 frame (ratio 0.5625).
-
-   PHONES are TALLER than that (an iPhone is 19.5:9, ratio ~0.46). So `cover` scales the photo
-   to fill the height and the overflow spills off the LEFT AND RIGHT — it trims ~9% of empty
-   concrete from each side. The hat and the boots are completely untouched. The photo fills
-   the screen edge to edge and top to bottom, which is what Caitlin asked for.
-
-   WIDE DESKTOPS are the opposite: `cover` there fills the width and the overflow spills off
-   the TOP AND BOTTOM, which is what was slicing her hat off. There is no good crop of a 9:16
-   photo in a 16:10 window, so we don't crop — `contain` shows the entire frame with black at
-   the sides. The page is black and so is the photo's world, so it reads as the photo floating
-   in the dark rather than as letterboxing.
-
-   Breakpoint is the photo's own aspect ratio: narrower than 9/16 -> cover; wider -> contain. */
 .hero-photo img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-
-@media (min-aspect-ratio: 9/16) {
-    .hero-photo img {
-        object-fit: contain;
-    }
+    object-fit: cover;     /* box and image are both 1:1, so this crops nothing */
 }
 
 .hero-empty {
     width: 100%;
-    height: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    aspect-ratio: 1;
     background: #1A1A1A;
-}
-
-/* A full-screen photo with nothing on it reads, to some people, as the entire page. This is
-   the smallest possible hint that there's more below: a thin line that breathes.
-   DARK, not white — the bottom of this frame is pale concrete floor, where a white line is
-   invisible (confirmed by looking at the render, not by guessing). */
-.hero-cue {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    width: 1px;
-    height: 42px;
-    background: linear-gradient(to bottom, rgba(17, 17, 17, 0.85), transparent);
-    transform: translateX(-50%);
-    animation: cue 2.4s ease-in-out infinite;
-}
-
-@keyframes cue {
-    0%, 100% { opacity: 1;   transform: translateX(-50%) scaleY(1); }
-    50%      { opacity: 0.3; transform: translateX(-50%) scaleY(0.55); }
 }
 
 /* ==========================================================================
    SHOP — "SHOP MY FAVS", thin rule, category scroller, then the products
    ========================================================================== */
-.shop { padding: 56px 0 80px; }
+.shop { padding: 34px 0 80px; }
 
-/* THE GREY BLOCK.
-   Rhode's signature warm greige, which is what Caitlin pointed at. It bleeds to the screen
-   edges (cancelling main's padding) so it reads as a band across the page rather than a
-   floating card — the one soft, warm surface in an otherwise black-and-white site. */
-.shop-block {
-    background: #D6D1C8;
-    color: #1A1A1A;
-    margin-inline: -20px;
-    padding: 26px 20px 22px;
-    margin-bottom: 26px;
+.shop-head {
+    margin-bottom: 20px;
 }
 
-/* LEFT-aligned, small, uppercase, tracked out — set like the CAKEDBYCAITLIN cards on the
-   floor of the hero shot. This is the page's <h1>; the brand name rides inside it as
-   .sr-only, because search is Caitlin's only inbound channel. */
+/* SHOP MY FAVS — a small, neat chip. Not a band, not a banner.
+   The one warm surface on the site (Rhode's greige). Left-aligned, tight, uppercase and
+   tracked out, set like the @cakedbycaitlin cards on the floor of the hero shot.
+
+   It's an inline-block so the chip hugs the text instead of stretching across the page.
+   It's also the <h1> — the brand name rides inside it as .sr-only, because search is
+   Caitlin's only inbound channel. */
 .shop-heading {
+    display: inline-block;
+    background: var(--stone);
+    color: #14110F;
+    padding: 9px 16px;
+    border-radius: 2px;
     font-weight: 500;
-    font-size: clamp(0.95rem, 3vw, 1.1rem);
-    letter-spacing: 0.24em;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #1A1A1A;
-    padding-bottom: 14px;
+    line-height: 1;
 }
 
-/* The thin divider, immediately under the heading. Dark, because it now sits on the grey. */
+/* The divider, immediately below. A hairline — it should suggest the edge, not draw it. */
 .shop-rule {
     height: 1px;
-    background: rgba(26, 26, 26, 0.22);
+    background: var(--line);
+    margin: 18px 0 16px;
 }
 
-/* The socials live INSIDE the grey block — Instagram directly beneath the heading, before
-   the category filter starts. So they invert: dark on grey, not white on black. */
-.shop-block .socials {
+/* Instagram sits here: directly under the heading, before the category rail starts. */
+.shop-head .socials {
     justify-content: flex-start;
-    margin: 16px 0 0;
-}
-
-.shop-block .social {
-    border-color: rgba(26, 26, 26, 0.28);
-    color: #1A1A1A;
-}
-
-.shop-block .social:hover,
-.shop-block .social:focus-visible {
-    background: #1A1A1A;
-    border-color: #1A1A1A;
-    color: #D6D1C8;
-}
-
-/* Instagram keeps its real gradient. Filling the circle on hover would wash the rainbow
-   out against it, so darken the ring instead and leave the mark alone. */
-.shop-block .social--instagram:hover,
-.shop-block .social--instagram:focus-visible {
-    background: transparent;
-    border-color: rgba(26, 26, 26, 0.6);
+    margin-bottom: 0;
 }
 
 /* Legally required, and it has to be encountered BEFORE the first affiliate link — a
@@ -250,16 +200,30 @@ main {
     max-width: 72ch;
 }
 
-/* ---------- the category scroller ---------- */
+/* ---------- the category rail ----------
+   Sticks to the top as you scroll the grid, so the filter is always in reach — the thing
+   ShopMy does and the reason their storefront feels effortless on a phone. The blurred
+   backdrop keeps the products readable as they pass underneath it. */
 .pills {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding: 2px 20px 18px;
+    padding: 14px 20px;
     margin: 0 -20px 26px;
+
+    background: rgba(10, 10, 10, 0.78);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;   /* don't hand a horizontal flick back to the page */
 }
 
 .pills::-webkit-scrollbar { display: none; }
@@ -268,19 +232,23 @@ main {
 .pill {
     flex: 0 0 auto;
     scroll-snap-align: start;
-    padding: 9px 18px;
-    border: 1px solid var(--line);
+    padding: 8px 16px;
+    border: 1px solid var(--line-mid);
     border-radius: 100px;
     background: transparent;
-    color: var(--ink);
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     white-space: nowrap;
-    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+    transition: background 220ms var(--ease), color 220ms var(--ease), border-color 220ms var(--ease);
 }
 
-.pill:hover { border-color: rgba(255, 255, 255, 0.5); }
+.pill:hover {
+    color: #FFF;
+    border-color: rgba(255, 255, 255, 0.32);
+}
 
 .pill.is-active {
     background: #FFF;
@@ -289,7 +257,7 @@ main {
 }
 
 /* ---------- category sections ---------- */
-.cat { margin-bottom: 52px; }
+.cat { margin-bottom: 48px; }
 .cat[hidden] { display: none; }
 
 .cat-head {
@@ -300,24 +268,25 @@ main {
 
 .cat-name {
     font-weight: 500;
-    font-size: 0.85rem;
-    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: #FFF;
     margin-bottom: 6px;
 }
 
 .cat-blurb {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
     color: var(--ink-soft);
-    max-width: 62ch;
+    max-width: 60ch;
 }
 
 /* ---------- product grid ---------- */
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
 /* Cards stay WHITE on the black page. Retailer product cutouts are shot on white, so a dark
@@ -328,46 +297,56 @@ main {
     flex-direction: column;
     background: var(--surface);
     color: var(--card-ink);
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
-    transition: transform 200ms ease;
+    transition: transform 320ms var(--ease), box-shadow 320ms var(--ease);
 }
 
-.card:hover { transform: translateY(-3px); }
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
 
 .card-media {
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    padding: 16px;
+    padding: 18px;
     background: var(--surface);
 }
 
-.card-media img { width: 100%; height: 100%; object-fit: contain; }
+.card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 420ms var(--ease);
+}
+
+.card:hover .card-media img { transform: scale(1.04); }
 
 .card-noimg {
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(45deg, #F4F3F1, #F4F3F1 8px, #EAE8E4 8px, #EAE8E4 16px);
+    background: #F4F3F1;
 }
 
 .card-body {
     flex: 1;
-    padding: 2px 14px 12px;
+    padding: 4px 14px 14px;
     text-align: center;
 }
 
 .card-brand {
-    font-size: 0.64rem;
-    letter-spacing: 0.14em;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--card-ink-soft);
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 .card-name {
     font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     line-height: 1.35;
     color: var(--card-ink);
 }
@@ -375,45 +354,44 @@ main {
 /* Her voice. The reason someone buys from her rather than googling the product themselves —
    and since April 2026 Amazon requires the commentary too, not just a bare grid of links. */
 .card-note {
-    margin-top: 8px;
-    font-size: 0.78rem;
+    margin-top: 7px;
+    font-size: 0.74rem;
     line-height: 1.5;
     color: var(--card-ink-soft);
 }
 
 .card-price {
-    margin-top: 8px;
-    font-size: 0.83rem;
+    margin-top: 7px;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--card-ink);
 }
 
 /* INSET, not a full-bleed bar.
    ShopMy runs a black SHOP NOW bar edge-to-edge along the bottom of the card — but their
-   page is LIGHT, so the black bar has a hard edge against it. On this black page that same
-   bar merges straight into the background and the button loses its shape entirely (saw it
-   in the render). Insetting it keeps white card on all four sides of the button, so it
-   reads as a button again. */
+   page is LIGHT, so that bar has a hard edge against it. On this black page the same bar
+   merges straight into the background and the button loses its shape entirely (saw it in
+   the render). Insetting keeps white card on all four sides, so it reads as a button. */
 .card-cta {
     display: block;
-    margin: 0 12px 12px;
-    padding: 13px 12px;
+    margin: 0 11px 11px;
+    padding: 12px;
     border-radius: 2px;
     background: #111;
     color: #FFF;
     text-align: center;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    transition: background 200ms ease;
+    transition: background 220ms var(--ease);
 }
 
 .card-cta:hover,
 .card-cta:focus-visible { background: #3D3D3D; }
 
 .card-cta--disabled {
-    background: #EDEBE7;
+    background: #EFEDE9;
     color: var(--card-ink-soft);
     cursor: default;
 }
@@ -458,7 +436,7 @@ main {
     display: block;
     text-align: center;
     padding: 15px 20px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-mid);
     border-radius: 2px;
     transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 }
@@ -506,14 +484,14 @@ main {
 .social {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--line);
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line-mid);
     border-radius: 50%;
-    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+    transition: background 220ms var(--ease), color 220ms var(--ease), border-color 220ms var(--ease);
 }
 
-.social svg { width: 19px; height: 19px; }
+.social svg { width: 17px; height: 17px; }
 
 .social:hover,
 .social:focus-visible {
@@ -536,18 +514,22 @@ main {
 .work { padding: 24px 0 72px; }
 
 .work-heading {
+    display: inline-block;
+    background: var(--stone);
+    color: #14110F;
+    padding: 9px 16px;
+    border-radius: 2px;
     font-weight: 500;
-    font-size: clamp(0.95rem, 3vw, 1.1rem);
-    letter-spacing: 0.24em;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #FFF;
-    padding-bottom: 14px;
+    line-height: 1;
 }
 
 .work-rule {
     height: 1px;
     background: var(--line);
-    margin-bottom: 26px;
+    margin: 18px 0 24px;
 }
 
 /* No gaps, no rounded corners, no gutters. The photos butt straight against each other and
@@ -606,7 +588,6 @@ main {
    ========================================================================== */
 @media (min-width: 700px) {
     main { padding: 0 32px; }
-    .shop-block { margin-inline: -32px; padding: 30px 32px 24px; }
     .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .work-grid { margin-inline: -32px; width: calc(100% + 64px); }
 }

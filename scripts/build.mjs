@@ -38,10 +38,26 @@ const { looks } = readJSON('data/looks.json');
 
 const cats = [...categories].sort((a, b) => a.order - b.order);
 
-/* Only 'live' products render. A card that looks perfect but earns nothing is the failure
- * mode we're avoiding — better to show nothing than to show a link that pays her $0. */
-const live = products.filter((p) => p.status === 'live');
+/* Normally ONLY 'live' products render. A card that looks perfect but earns nothing is the
+ * failure mode this whole system exists to prevent.
+ *
+ * DEMO MODE is the one exception, and it is temporary. Caitlin has no affiliate accounts yet,
+ * so that rule would leave the shop permanently empty with nothing to look at. With
+ * affiliates.json -> demoMode: true, products flagged demo:true render using their RAW
+ * retailer URL. Those are real links to real products; they simply aren't earning yet.
+ * Nothing is faked — we never invent an affiliate URL — and the build shouts about every one.
+ *
+ * Turn demoMode off the moment her accounts exist. */
+const affiliates = readJSON('data/affiliates.json');
+const DEMO = affiliates.demoMode === true;
+
+const isDemo = (p) => DEMO && p.demo === true && p.url;
+const live = products.filter((p) => p.status === 'live' || isDemo(p));
 const liveByCat = (id) => live.filter((p) => p.category === id);
+
+/* The href for a card. Prefer the affiliate URL; fall back to the raw URL in demo mode.
+ * NEVER a /go/ redirect — Amazon's agreement forbids obscuring the referring site. */
+const hrefFor = (p) => p.affiliateUrl || p.url;
 
 const activeMerch = merch.filter((m) => m.status === 'live' || m.stripeUrl);
 
@@ -150,22 +166,22 @@ function buildHead() {
     .join('\n    ');
 }
 
-/* ---------- hero: the full-bleed photo that owns the first screen ---------- */
+/* ---------- hero: a SQUARE photo at the top, not a full-screen takeover ---------- */
 function buildHero() {
   if (!site.headshot) return `<div class="hero-empty" aria-hidden="true"></div>`;
 
-  // A real <button>, because clicking it turns it from black and white into colour —
-  // the same interaction as the wall of her work — and that has to be reachable from a
-  // keyboard. Buttons give us Enter and Space for free.
+  // A real <button>: clicking it turns the photo from black and white into colour (the same
+  // interaction as the wall of her work), and that has to be reachable from a keyboard.
+  // Buttons give us Enter and Space for free.
   //
-  // fetchpriority=high and NO lazy loading: this is the LCP element. It is the first and
-  // only thing on screen, so nothing should defer it.
+  // fetchpriority=high, no lazy loading: this is the LCP element.
+  // The source is square, so width/height are square — no layout shift, no crop.
   return `<button class="hero-photo reveal" type="button" aria-label="Show this photo in colour">
-      <img src="${esc(site.headshot)}" alt="${esc(site.name)} — wedding hair and makeup artist" width="1080" height="1920" fetchpriority="high" decoding="async">
+      <img src="${esc(site.headshot)}" alt="${esc(site.name)} — wedding hair and makeup artist" width="1200" height="1200" fetchpriority="high" decoding="async">
     </button>`;
 }
 
-/* ---------- "SHOP MY FAVS" — the heading that opens the shop ---------- */
+/* ---------- "SHOP MY FAVS" — the small grey chip that opens the shop ---------- */
 function buildHeading() {
   // The brand name, the "Curated by" kicker and the bio all used to print here. All gone:
   // Caitlin wants it minimal, and the hero already has CAKEDBYCAITLIN printed on every card
@@ -238,9 +254,13 @@ function productCard(p) {
     ? `<img src="${esc(p.image)}" alt="${esc(title)}" loading="lazy" decoding="async" width="300" height="300">`
     : `<div class="card-noimg" aria-hidden="true"></div>`;
 
-  /* Direct href to the affiliate URL. NOT a /go/ redirect — Amazon's Operating Agreement
-   * forbids obscuring the referring site, and a redirect would do exactly that.
-   * Click tracking happens client-side on this anchor instead. */
+  /* Direct href. NOT a /go/ redirect — Amazon's Operating Agreement forbids obscuring the
+   * referring site, and a redirect would do exactly that. Click tracking is client-side.
+   *
+   * rel="sponsored" only when the link is ACTUALLY monetised. Tagging an unmonetised demo
+   * link as sponsored would be a lie to search engines. */
+  const monetised = Boolean(p.affiliateUrl);
+
   return `<article class="card" data-cat="${esc(p.category)}">
         <div class="card-media">${img}</div>
         <div class="card-body">
@@ -249,7 +269,7 @@ function productCard(p) {
           ${p.note ? `<p class="card-note">${esc(p.note)}</p>` : ''}
           ${p.price ? `<p class="card-price">${esc(p.price)}</p>` : ''}
         </div>
-        <a class="card-cta" href="${esc(p.affiliateUrl)}" target="_blank" rel="noopener noreferrer sponsored" data-track="product:${esc(p.id)}">Shop Now</a>
+        <a class="card-cta" href="${esc(hrefFor(p))}" target="_blank" rel="noopener noreferrer${monetised ? ' sponsored' : ''}" data-track="product:${esc(p.id)}">Shop Now</a>
       </article>`;
 }
 
@@ -473,8 +493,23 @@ const counts = {
   needsAttention: products.filter((p) => p.status === 'needs-attention').length,
 };
 
+const unmonetised = live.filter((p) => !p.affiliateUrl);
+
 console.log('built index.html + sitemap.xml');
 console.log(`  live on the shop:  ${counts.live}`);
+
+if (DEMO) {
+  console.log('');
+  console.log('  ================================================================');
+  console.log('   DEMO MODE IS ON — data/affiliates.json -> demoMode: true');
+  console.log(`   ${unmonetised.length} products are VISIBLE but EARN NOTHING.`);
+  console.log('   They link to the real retailer, but with no affiliate tag.');
+  console.log('');
+  console.log('   To fix: fill in accounts.amazonTag / accounts.shopMyUserId,');
+  console.log('   set demoMode to false, then re-run enrich.');
+  console.log('  ================================================================');
+  console.log('');
+}
 if (writtenLooks.length) {
   console.log(`  look pages:        ${writtenLooks.length}`);
   for (const l of writtenLooks) {

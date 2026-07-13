@@ -25,7 +25,8 @@
     <meta name="twitter:title" content="Caked by Caitlin | Wedding Makeup Artist&#39;s Product Edit">
     <meta name="twitter:description" content="The exact products a working wedding makeup artist uses on her brides — skin prep, lips, powders, blush and tools. Shop the edit.">
     <meta name="twitter:image" content="https://grantdozier.github.io/CakedByCaitlin/og-image.jpg">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Caked by Caitlin","description":"Wedding hair & makeup artist. These are the products I actually use on my brides — nothing in here is a guess.","url":"https://grantdozier.github.io/CakedByCaitlin/","jobTitle":"Hair & Makeup Artist","image":"https://grantdozier.github.io/CakedByCaitlin/images/hero.webp"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Caked by Caitlin","description":"Wedding hair & makeup artist. These are the products I actually use on my brides — nothing in here is a guess.","url":"https://grantdozier.github.io/CakedByCaitlin/","jobTitle":"Hair & Makeup Artist","image":"https://grantdozier.github.io/CakedByCaitlin/images/hero.webp","sameAs":["https://instagram.com/cakedbycaitlin"]}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Caked by Caitlin — the product edit","numberOfItems":14,"itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"Product","name":"Rhode Glazing Milk","brand":{"@type":"Brand","name":"Rhode"}}},{"@type":"ListItem","position":2,"item":{"@type":"Product","name":"Caudalie Resveratrol Lift Firming Eye Gel Cream","brand":{"@type":"Brand","name":"Caudalie"}}},{"@type":"ListItem","position":3,"item":{"@type":"Product","name":"Byoma Moisturizing Gel Cream","brand":{"@type":"Brand","name":"Byoma"}}},{"@type":"ListItem","position":4,"item":{"@type":"Product","name":"MAC Lipstick — Crème Cup","brand":{"@type":"Brand","name":"MAC"}}},{"@type":"ListItem","position":5,"item":{"@type":"Product","name":"Anastasia Beverly Hills Matte Lipstick","brand":{"@type":"Brand","name":"Anastasia Beverly Hills"}}},{"@type":"ListItem","position":6,"item":{"@type":"Product","name":"Buxom Full-On Plumping Lip Polish — Lingerie","brand":{"@type":"Brand","name":"Buxom"}}},{"@type":"ListItem","position":7,"item":{"@type":"Product","name":"Maybelline Lifter Gloss","brand":{"@type":"Brand","name":"Maybelline"}}},{"@type":"ListItem","position":8,"item":{"@type":"Product","name":"Charlotte Tilbury Airbrush Flawless Finish Powder","brand":{"@type":"Brand","name":"Charlotte Tilbury"}}},{"@type":"ListItem","position":9,"item":{"@type":"Product","name":"Huda Beauty Easy Bake Loose Baking & Setting Powder","brand":{"@type":"Brand","name":"Huda Beauty"}}},{"@type":"ListItem","position":10,"item":{"@type":"Product","name":"Rare Beauty Soft Pinch Liquid Blush","brand":{"@type":"Brand","name":"Rare Beauty"}}},{"@type":"ListItem","position":11,"item":{"@type":"Product","name":"Hourglass Ambient Lighting Blush","brand":{"@type":"Brand","name":"Hourglass"}}},{"@type":"ListItem","position":12,"item":{"@type":"Product","name":"Byoma Melting Cleansing Balm","brand":{"@type":"Brand","name":"Byoma"}}},{"@type":"ListItem","position":13,"item":{"@type":"Product","name":"Beautyblender Original Beauty Sponge","brand":{"@type":"Brand","name":"Beautyblender"}}},{"@type":"ListItem","position":14,"item":{"@type":"Product","name":"Makeup By Mario F1 Foundation Brush","brand":{"@type":"Brand","name":"Makeup By Mario"}}}]}</script>
     <!--BUILD:HEAD:END-->
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -54,38 +55,52 @@
 <body>
 
 <!-- ============ HERO ============
-     Full bleed: the photo owns the whole first screen. NOTHING is cropped — see the
-     object-fit: contain note in style.css. Sits outside <main> to escape its max-width.
+     A SQUARE image at the top — not a full-screen takeover. Sized so that SHOP MY FAVS and
+     the start of the category rail are visible without scrolling.
+
+     The source is already square, so nothing is cropped at any size. Black and white until
+     you click it; then the boots come up.
 -->
 <header class="hero">
     <!--BUILD:HERO:START-->
     <button class="hero-photo reveal" type="button" aria-label="Show this photo in colour">
-      <img src="images/hero.webp" alt="Caked by Caitlin — wedding hair and makeup artist" width="1080" height="1920" fetchpriority="high" decoding="async">
+      <img src="images/hero.webp" alt="Caked by Caitlin — wedding hair and makeup artist" width="1200" height="1200" fetchpriority="high" decoding="async">
     </button>
     <!--BUILD:HERO:END-->
-    <div class="hero-cue" aria-hidden="true"></div>
 </header>
 
 <main>
 
     <!-- ============ SHOP ============
-         "SHOP MY FAVS" on top, thin divider right below it, then the category scroller,
-         then the products with their affiliate links.
+         SHOP MY FAVS (a small grey chip) -> faint divider -> Instagram -> category rail
+         -> the products, with their affiliate links.
     -->
     <section class="shop" id="shop">
 
-        <!--
-          The grey block: "SHOP MY FAVS" on top, thin divider right below it, then the
-          socials — Instagram sits here, directly under the heading and before the
-          category filter starts.
-        -->
-        <div class="shop-block">
+        <div class="shop-head">
             <!--BUILD:HEADING:START-->
     <h1 class="shop-heading"><span class="sr-only">Caked by Caitlin — </span>Shop my favs</h1>
     <!--BUILD:HEADING:END-->
+
             <div class="shop-rule"></div>
+
             <!--BUILD:SOCIALS:START-->
-    <!-- No social handles yet. Add them in /admin -> Site Settings. -->
+    <div class="socials">
+      <a class="social social--instagram" href="https://instagram.com/cakedbycaitlin" target="_blank" rel="noopener noreferrer" aria-label="instagram" data-track="social:instagram"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#FFD600"/>
+            <stop offset="0.25" stop-color="#FF7A00"/>
+            <stop offset="0.5" stop-color="#FF0069"/>
+            <stop offset="0.75" stop-color="#D300C5"/>
+            <stop offset="1" stop-color="#7638FA"/>
+          </linearGradient>
+        </defs>
+        <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4" stroke="url(#ig-grad)" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.4" stroke="url(#ig-grad)" stroke-width="2"/>
+        <circle cx="17.6" cy="6.4" r="1.4" fill="url(#ig-grad)"/>
+      </svg></a>
+    </div>
     <!--BUILD:SOCIALS:END-->
         </div>
 
@@ -103,18 +118,224 @@
     <!--BUILD:DISCLOSURE_AMAZON:END-->
         </p>
 
+        <!-- Sticky on scroll: the rail follows you down the grid, like ShopMy's. -->
         <div class="pills" role="group" aria-label="Filter by category">
             <!--BUILD:PILLS:START-->
-    <!-- No categories with live products yet. -->
+    <button class="pill is-active" data-filter="all" type="button">All</button>
+      <button class="pill" data-filter="getting-ready-prep" type="button">Getting Ready Prep</button>
+      <button class="pill" data-filter="lipstick" type="button">Lipstick</button>
+      <button class="pill" data-filter="lipgloss" type="button">Lip Gloss</button>
+      <button class="pill" data-filter="powders" type="button">Powders</button>
+      <button class="pill" data-filter="blushes" type="button">Blushes</button>
+      <button class="pill" data-filter="end-of-night" type="button">End of the Night</button>
+      <button class="pill" data-filter="tools" type="button">Tools</button>
     <!--BUILD:PILLS:END-->
         </div>
 
         <div class="shop-body">
             <!--BUILD:SHOP:START-->
-    <div class="empty">
-        <p class="empty-title">Your shop is ready and waiting.</p>
-        <p class="empty-body">Nothing's live yet. Open the shop admin, paste a product link, and it'll appear here in about a minute.</p>
+    <section class="cat" id="getting-ready-prep" data-cat="getting-ready-prep">
+      <header class="cat-head">
+        <h2 class="cat-name">Getting Ready Prep</h2>
+        <p class="cat-blurb">Skin prep is the whole game. This is what I have my brides using in the run-up so the makeup sits right on the day.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="getting-ready-prep">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Rhode</p>
+          <h3 class="card-name">Glazing Milk</h3>
+          <p class="card-note">The first thing I put on every bride. Makeup grabs onto it instead of sliding off.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.rhodeskin.com/products/glazing-milk" target="_blank" rel="noopener noreferrer" data-track="product:rhode-glazing-milk">Shop Now</a>
+      </article>
+        <article class="card" data-cat="getting-ready-prep">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Caudalie</p>
+          <h3 class="card-name">Resveratrol Lift Firming Eye Gel Cream</h3>
+          <p class="card-note">Depuffs the 6am eyes. Genuinely non-negotiable on a wedding morning.</p>
+          
+        </div>
+        <a class="card-cta" href="https://us.caudalie.com/resveratrol-lift-firming-eye-gel-cream.html" target="_blank" rel="noopener noreferrer" data-track="product:caudalie-eye-cream">Shop Now</a>
+      </article>
+        <article class="card" data-cat="getting-ready-prep">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Byoma</p>
+          <h3 class="card-name">Moisturizing Gel Cream</h3>
+          <p class="card-note">For the girls whose skin gets angry the second they get nervous.</p>
+          
+        </div>
+        <a class="card-cta" href="https://byoma.com/product/moisturizing-gel-cream/" target="_blank" rel="noopener noreferrer" data-track="product:byoma-moisturizing-gel-cream">Shop Now</a>
+      </article>
       </div>
+    </section>
+
+    <section class="cat" id="lipstick" data-cat="lipstick">
+      <header class="cat-head">
+        <h2 class="cat-name">Lipstick</h2>
+        <p class="cat-blurb">Long-wear shades that survive the first look, the toasts, and the kiss.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="lipstick">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">MAC</p>
+          <h3 class="card-name">Lipstick — Crème Cup</h3>
+          <p class="card-note">The safest pretty pink there is. I&#39;ve never had anyone dislike it.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.maccosmetics.com/product/13854/310/products/makeup/lips/lipstick/lipstick" target="_blank" rel="noopener noreferrer" data-track="product:mac-creme-cup">Shop Now</a>
+      </article>
+        <article class="card" data-cat="lipstick">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Anastasia Beverly Hills</p>
+          <h3 class="card-name">Matte Lipstick</h3>
+          <p class="card-note">My go-to nude that still reads on camera instead of disappearing.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.anastasiabeverlyhills.com/products/matte-lipstick" target="_blank" rel="noopener noreferrer" data-track="product:abh-lip-velvet">Shop Now</a>
+      </article>
+      </div>
+    </section>
+
+    <section class="cat" id="lipgloss" data-cat="lipgloss">
+      <header class="cat-head">
+        <h2 class="cat-name">Lip Gloss</h2>
+        <p class="cat-blurb">Gloss reads beautifully on camera. These are the ones that don&#39;t go sticky.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="lipgloss">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Buxom</p>
+          <h3 class="card-name">Full-On Plumping Lip Polish — Lingerie</h3>
+          <p class="card-note">The one clients ask me about mid-chair. Every single time.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/buxom-full-on-lip-polish-P248401" target="_blank" rel="noopener noreferrer" data-track="product:buxom-lingerie">Shop Now</a>
+      </article>
+        <article class="card" data-cat="lipgloss">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Maybelline</p>
+          <h3 class="card-name">Lifter Gloss</h3>
+          <p class="card-note">Drugstore, and it holds its own against gloss three times the price.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.maybelline.com/lip-makeup/lip-gloss/lifter-gloss" target="_blank" rel="noopener noreferrer" data-track="product:maybelline-lifter-gloss">Shop Now</a>
+      </article>
+      </div>
+    </section>
+
+    <section class="cat" id="powders" data-cat="powders">
+      <header class="cat-head">
+        <h2 class="cat-name">Powders</h2>
+        <p class="cat-blurb">The difference between makeup that lasts eight hours and makeup that lasts two.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="powders">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Charlotte Tilbury</p>
+          <h3 class="card-name">Airbrush Flawless Finish Powder</h3>
+          <p class="card-note">Sets everything without going flat or cakey. Worth the money.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.charlottetilbury.com/us/product/airbrush-flawless-finish" target="_blank" rel="noopener noreferrer" data-track="product:charlotte-tilbury-airbrush-powder">Shop Now</a>
+      </article>
+        <article class="card" data-cat="powders">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Huda Beauty</p>
+          <h3 class="card-name">Easy Bake Loose Baking &amp; Setting Powder</h3>
+          <p class="card-note">What I bake under the eyes with. It&#39;s why the concealer is still there at midnight.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/easy-bake-loose-baking-setting-powder-P434352" target="_blank" rel="noopener noreferrer" data-track="product:huda-easy-bake">Shop Now</a>
+      </article>
+      </div>
+    </section>
+
+    <section class="cat" id="blushes" data-cat="blushes">
+      <header class="cat-head">
+        <h2 class="cat-name">Blushes</h2>
+        <p class="cat-blurb">From a whisper of flush to a full romantic glow.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="blushes">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Rare Beauty</p>
+          <h3 class="card-name">Soft Pinch Liquid Blush</h3>
+          <p class="card-note">One dot. That is genuinely all you need — I promise.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/rare-beauty-by-selena-gomez-soft-pinch-liquid-blush-P97989778" target="_blank" rel="noopener noreferrer" data-track="product:rare-beauty-soft-pinch-blush">Shop Now</a>
+      </article>
+        <article class="card" data-cat="blushes">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Hourglass</p>
+          <h3 class="card-name">Ambient Lighting Blush</h3>
+          <p class="card-note">Lights you up from the inside. It photographs like a dream.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/ambient-lighting-blush-P385951" target="_blank" rel="noopener noreferrer" data-track="product:hourglass-ambient-blush">Shop Now</a>
+      </article>
+      </div>
+    </section>
+
+    <section class="cat" id="end-of-night" data-cat="end-of-night">
+      <header class="cat-head">
+        <h2 class="cat-name">End of the Night</h2>
+        <p class="cat-blurb">You will be tired. Your skin still deserves this.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="end-of-night">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Byoma</p>
+          <h3 class="card-name">Melting Cleansing Balm</h3>
+          <p class="card-note">You&#39;ll be exhausted. Your skin still deserves ninety seconds of this.</p>
+          
+        </div>
+        <a class="card-cta" href="https://byoma.com/product/melting-cleansing-balm/" target="_blank" rel="noopener noreferrer" data-track="product:byoma-cleansing-balm">Shop Now</a>
+      </article>
+      </div>
+    </section>
+
+    <section class="cat" id="tools" data-cat="tools">
+      <header class="cat-head">
+        <h2 class="cat-name">Tools</h2>
+        <p class="cat-blurb">The brushes, sponges and puffs I use on real clients — not the pretty ones that sit in a drawer.</p>
+      </header>
+      <div class="grid">
+        <article class="card" data-cat="tools">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Beautyblender</p>
+          <h3 class="card-name">Original Beauty Sponge</h3>
+          <p class="card-note">Damp, always. A dry sponge drinks your foundation and gives you nothing back.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/beautyblender-P442400" target="_blank" rel="noopener noreferrer" data-track="product:beautyblender-original">Shop Now</a>
+      </article>
+        <article class="card" data-cat="tools">
+        <div class="card-media"><div class="card-noimg" aria-hidden="true"></div></div>
+        <div class="card-body">
+          <p class="card-brand">Makeup By Mario</p>
+          <h3 class="card-name">F1 Foundation Brush</h3>
+          <p class="card-note">The only brush that&#39;s survived five years in my working kit.</p>
+          
+        </div>
+        <a class="card-cta" href="https://www.sephora.com/product/makeup-by-mario-f1-foundation-brush-P479112" target="_blank" rel="noopener noreferrer" data-track="product:makeup-by-mario-brush">Shop Now</a>
+      </article>
+      </div>
+    </section>
     <!--BUILD:SHOP:END-->
         </div>
 

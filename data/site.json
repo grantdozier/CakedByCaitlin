@@ -31,8 +31,12 @@
   "headshot": "images/hero.webp",
 
   "socials": {
-    "$comment": "Full profile URLs. Leave blank to hide that icon.",
-    "instagram": "",
+    "$comment": [
+      "Full profile URLs. Leave blank to HIDE that icon — we never ship a dead link.",
+      "The Instagram handle is @cakedbycaitlin, which is printed on the business cards",
+      "scattered across the floor of the hero photo. Confirm the others with Caitlin."
+    ],
+    "instagram": "https://instagram.com/cakedbycaitlin",
     "tiktok": "",
     "facebook": "",
     "pinterest": "",
