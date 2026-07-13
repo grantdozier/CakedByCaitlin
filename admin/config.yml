@@ -1,0 +1,583 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.170.8/schema/sveltia-cms.json
+# =============================================================================
+# Sveltia CMS — Caked by Caitlin
+# =============================================================================
+#
+# The $schema line above is not decoration: it makes an editor (and any CI check) validate
+# this file against Sveltia's OWN schema. Keep it pinned to the same version as the <script>
+# tag in admin/index.html, or you are checking against the wrong rules. Three bugs in the
+# first cut of this file were only visible that way — see public_folder and `description`.
+#
+# WHO USES THIS: Caitlin. She is not technical. She is likely on an iPhone, one-handed,
+# possibly at a wedding. Every field below is designed around one action:
+# PASTE A PRODUCT LINK AND HIT PUBLISH. Everything else is filled in for her.
+#
+# -----------------------------------------------------------------------------
+# ⚠️ THE DROPPED-FIELD TRAP — read this before editing this file
+# -----------------------------------------------------------------------------
+# Sveltia (like Decap) writes back ONLY the fields it knows about. If a key exists in
+# data/*.json but is NOT declared here, IT IS SILENTLY DELETED the first time Caitlin
+# saves that file. That includes the "$comment" blocks. So every "$comment" is declared
+# below as a `hidden` widget purely so it round-trips intact — she never sees them, and
+# they never get destroyed.
+#
+# If you add a key to any data/*.json, you MUST add it here too. No exceptions.
+#
+# -----------------------------------------------------------------------------
+# data/affiliates.json IS DELIBERATELY NOT EXPOSED HERE.
+# -----------------------------------------------------------------------------
+# It is developer-maintained. It holds the Amazon Associates tag, the ShopMy user id and
+# the domain->network routing rules that decide whether a link earns money. A wrong edit
+# there does not look broken — it just silently stops paying, which is the worst possible
+# failure. Caitlin has no reason to open it and no way to. Keep it that way.
+# =============================================================================
+
+backend:
+  name: github
+  repo: grantdozier/CakedByCaitlin
+  branch: main
+
+  # OAuth "authorization code" flow, served by a Cloudflare Worker running sveltia-cms-auth.
+  #
+  # We do NOT use a Personal Access Token. Sveltia's own docs point non-technical users at
+  # this flow, and rightly so: a PAT would mean asking Caitlin to visit GitHub developer
+  # settings, choose scopes, and store a secret string on her phone forever. She would
+  # paste it into a note, it would expire, and the site would break with no explanation.
+  # With OAuth she taps "Login with GitHub" and that is the entire experience.
+  #
+  # TODO(dev): replace with the Worker URL you get from docs/CMS-SETUP.md step 2.
+  #            It looks like: https://sveltia-cms-auth.<your-subdomain>.workers.dev
+  #            No trailing slash. Do not include /auth — Sveltia appends that itself.
+  base_url: https://TODO-REPLACE-WITH-YOUR-CLOUDFLARE-WORKER.workers.dev
+  # auth_endpoint defaults to "auth", which is exactly what sveltia-cms-auth serves.
+  # Leave it alone unless you renamed the Worker's routes.
+
+# No editorial_workflow: it adds a "draft -> review -> publish" dance with pull requests.
+# Caitlin has no reviewer. Publish means publish — commit straight to main, GitHub Actions
+# rebuilds, the product is on the shop in about a minute.
+
+# Where an uploaded photo is COMMITTED in the repo. Relative to the repo root.
+media_folder: "images/uploads"
+
+# Where that photo is SERVED FROM once the site is live — and this one has a trap in it.
+#
+# Sveltia always forces this to be root-absolute: internally it strips any leading slash
+# and re-adds one, so `images/uploads` silently becomes `/images/uploads`. This site is a
+# GitHub *project* page served under /CakedByCaitlin/, so `/images/uploads/photo.jpg`
+# resolves to grantdozier.github.io/images/uploads/photo.jpg — the wrong repo, a 404, and
+# a broken image on the card she just made. scripts/build.mjs writes p.image into the
+# <img src> verbatim and also into the JSON-LD via new URL(p.image, siteUrl), so a bad
+# value here breaks the picture AND the Google rich result.
+#
+# So it MUST carry the /CakedByCaitlin prefix.
+#
+# ⚠️ WHEN THE SITE MOVES TO A CUSTOM DOMAIN (cakedbycaitlin.com), the site moves to the
+# domain root and this MUST become "/images/uploads" — otherwise every photo she has ever
+# uploaded 404s at once. Same day, same commit, no exceptions.
+public_folder: "/CakedByCaitlin/images/uploads"
+
+# Sveltia shows this as a "View site" link inside the CMS.
+site_url: https://grantdozier.github.io/CakedByCaitlin/
+display_url: https://grantdozier.github.io/CakedByCaitlin/
+
+collections:
+
+  # ===========================================================================
+  # PRODUCTS — the main event.
+  # ===========================================================================
+  # This is a `file` collection, not a `folder` collection: data/products.json is ONE file
+  # containing a top-level array under the `products` key. Folder collections expect one
+  # file per entry, which is not our data model.
+  # ---------------------------------------------------------------------------
+  # THE ENRICHMENT CONTRACT (what the GitHub Action does after she publishes):
+  #   she fills:  url, category, note, (optionally) image, featured
+  #   Action fills: id, name, brand, price, affiliateUrl, affiliateNetwork, status
+  #                 ...and image ONLY if she left it blank, so her own photo always wins.
+  # Fields the Action owns are marked `readonly: true` (a Sveltia feature; Decap would
+  # ignore it) and labelled so there is no ambiguity about who is in charge of them.
+  # ===========================================================================
+  - name: products
+    label: Products
+    # `description` belongs to the COLLECTION, not to the file inside it. Sveltia's schema
+    # has no `description` on a collection file, so the version of this that sat under
+    # `files:` was simply never displayed — the one line of instructions Caitlin actually
+    # reads was invisible. Same fix applied to all five collections below.
+    description: >-
+      Paste a product link, pick a category, say why you love it, hit Publish.
+      Everything else fills itself in within about a minute.
+    files:
+      - name: products
+        label: Products
+        file: data/products.json
+        format: json
+        fields:
+          # Declared only so it survives a save. Never shown to Caitlin.
+          # NOTE: a `hidden` field takes only name/widget/default/i18n — no `label`.
+          - { name: "$comment", widget: hidden }
+
+          - name: products
+            label: Products
+            label_singular: Product
+            widget: list
+            # Keeps the list readable on a phone: name plus whether it is actually earning.
+            summary: "{{fields.name}} — {{fields.status}}"
+            collapsed: true
+            fields:
+
+              # ---- THE PRIMARY ACTION -------------------------------------
+              - name: url
+                label: "Paste the product link"
+                widget: string
+                required: false
+                hint: >-
+                  Copy the link from Sephora / Ulta / Amazon and paste it here.
+                  I'll fill in the rest — the name, the brand, the price, the photo,
+                  and your commission link. This is the only field you really have to get right.
+
+              - name: category
+                label: "Which category?"
+                widget: select
+                required: true
+                default: getting-ready-prep
+                hint: "Where it belongs in the wedding-day timeline on your shop."
+                # These mirror data/categories.json. If you add a category there, add it here.
+                options:
+                  - { label: "Getting Ready Prep", value: getting-ready-prep }
+                  - { label: "Lipstick", value: lipstick }
+                  - { label: "Lip Gloss", value: lipgloss }
+                  - { label: "Powders", value: powders }
+                  - { label: "Blushes", value: blushes }
+                  - { label: "End of the Night", value: end-of-night }
+                  - { label: "Tools", value: tools }
+                  - { label: "Accessories", value: accessories }
+                  - { label: "Getting Ready Outfits", value: getting-ready-outfits }
+
+              - name: note
+                label: "Your note"
+                widget: text
+                required: true
+                hint: >-
+                  Say why you actually use this — one or two sentences, in your voice.
+                  This is required for two reasons. It's what makes the page yours instead of
+                  a catalogue. And Amazon now REQUIRES real commentary, not a bare grid of
+                  products, or your affiliate account can be closed. "Bride-proof, doesn't
+                  budge through the first look" beats "great product" every time.
+
+              - name: image
+                label: "Photo (optional)"
+                widget: image
+                required: false
+                choose_url: false
+                hint: >-
+                  Only if you want to. If you leave this empty I'll grab the official product
+                  photo from the link. A screenshot from your camera roll is NOT a link — it
+                  can't be clicked and it can't earn you anything, so the pasted link above
+                  always matters more than the picture.
+
+              - name: featured
+                label: "Feature this one?"
+                widget: boolean
+                required: false
+                default: false
+                hint: "Featured products get pushed to the top of their category."
+
+              # ---- FILLED IN AUTOMATICALLY — she should not touch these ----
+              - name: id
+                label: "ID — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+                hint: "Leave blank on a new product. It gets created for you."
+
+              - name: name
+                label: "Product name — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+
+              - name: brand
+                label: "Brand — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+
+              - name: price
+                label: "Price — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+
+              - name: affiliateUrl
+                label: "Your commission link — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+                hint: >-
+                  This is the version of the link that actually pays you. It is built from the
+                  link you pasted above. Editing it by hand will usually break the commission.
+
+              - name: affiliateNetwork
+                label: "Network — filled in automatically, don't edit"
+                widget: string
+                required: false
+                readonly: true
+                hint: "amazon, shopmy, or blank if this link isn't earning anything."
+
+              - name: status
+                label: "Status — filled in automatically, don't edit"
+                widget: select
+                required: false
+                readonly: true
+                default: needs-enrichment
+                hint: >-
+                  Only 'live' products show up on your shop. If you see 'needs-attention',
+                  that product is NOT earning you money — send it to Grant.
+                options:
+                  - { label: "Needs a link (hidden from shop)", value: needs-link }
+                  - { label: "Working on it… (hidden from shop)", value: needs-enrichment }
+                  - { label: "⚠️ Not earning — needs attention (hidden from shop)", value: needs-attention }
+                  - { label: "Live on the shop ✓", value: live }
+
+  # ===========================================================================
+  # MERCH — things Caitlin actually SELLS. Checkout is a Stripe Payment Link.
+  # ===========================================================================
+  - name: merch
+    label: Merch
+    description: >-
+      Robes, pyjamas, totes — the things you sell yourself. Each one needs a Stripe
+      Payment Link before it can be bought. See CAITLIN-HOWTO.md for how to make one.
+    files:
+      - name: merch
+        label: Merch
+        file: data/merch.json
+        format: json
+        fields:
+          - { name: "$comment", widget: hidden }
+
+          - name: items
+            label: Merch items
+            label_singular: Merch item
+            widget: list
+            summary: "{{fields.name}} — {{fields.status}}"
+            collapsed: true
+            fields:
+              - name: name
+                label: "Item name"
+                widget: string
+                required: true
+
+              - name: stripeUrl
+                label: "Stripe Payment Link"
+                widget: string
+                required: false
+                hint: >-
+                  Make the Payment Link in Stripe, then paste the URL here. If the item is
+                  personalised, add a custom text field called "Initials" in Stripe FIRST —
+                  that's how the buyer tells you what to embroider. Step-by-step is in
+                  CAITLIN-HOWTO.md. Until you paste a link here, the item shows a greyed-out
+                  "Coming Soon" instead of a Buy button — never a dead button that pretends
+                  to work. Once the link is in, set Status to "Live — buyable".
+
+              - name: price
+                label: "Price"
+                widget: string
+                required: false
+                hint: 'Just what it should say on the card, e.g. "$68". Stripe is what actually charges.'
+
+              - name: note
+                label: "Your note"
+                widget: text
+                required: false
+                hint: "A line about the item — fabric, fit, why the girls love it."
+
+              - name: image
+                label: "Photo"
+                widget: image
+                required: false
+                choose_url: false
+
+              - name: personalized
+                label: "Can it be personalised?"
+                widget: boolean
+                required: false
+                default: false
+                hint: "Turn on if the buyer gets to add initials or a name."
+
+              - name: personalizationLabel
+                label: "What do we ask the buyer for?"
+                widget: string
+                required: false
+                default: "Initials or name"
+                hint: >-
+                  The wording shown next to the box the buyer types in, e.g.
+                  "Initials (up to 3 letters)". Make this MATCH the custom field name you
+                  created on the Stripe Payment Link, or the two won't line up.
+
+              - name: category
+                label: "Which category?"
+                widget: select
+                required: true
+                default: getting-ready-outfits
+                options:
+                  - { label: "Getting Ready Prep", value: getting-ready-prep }
+                  - { label: "Lipstick", value: lipstick }
+                  - { label: "Lip Gloss", value: lipgloss }
+                  - { label: "Powders", value: powders }
+                  - { label: "Blushes", value: blushes }
+                  - { label: "End of the Night", value: end-of-night }
+                  - { label: "Tools", value: tools }
+                  - { label: "Accessories", value: accessories }
+                  - { label: "Getting Ready Outfits", value: getting-ready-outfits }
+
+              - name: status
+                label: "Status"
+                widget: select
+                required: false
+                default: needs-setup
+                hint: "Switch to Live once the Stripe link above is pasted in and you've tested it."
+                options:
+                  - { label: "Needs a Stripe link (shows 'Ask Caitlin')", value: needs-setup }
+                  - { label: "Live — buyable ✓", value: live }
+
+              - name: id
+                label: "ID — don't edit"
+                widget: string
+                required: false
+                readonly: true
+
+  # ===========================================================================
+  # LINKS — the Linktree-style hub cards.
+  # ===========================================================================
+  - name: links
+    label: Link Cards
+    description: >-
+      The big tappable buttons on your link page. Anything you want to push this week:
+      a discount code, a giveaway, a new reel.
+    files:
+      - name: links
+        label: Link Cards
+        file: data/links.json
+        format: json
+        fields:
+          - { name: "$comment", widget: hidden }
+
+          - name: links
+            label: Link cards
+            label_singular: Link card
+            widget: list
+            summary: "{{fields.title}}"
+            collapsed: true
+            fields:
+              - name: title
+                label: "Button text"
+                widget: string
+                required: true
+                hint: 'The big line, e.g. "Follow on Instagram".'
+
+              - name: subtitle
+                label: "Small line underneath"
+                widget: string
+                required: false
+
+              - name: url
+                label: "Where does it go?"
+                widget: string
+                required: false
+                hint: "Paste the full link. If you leave this blank the card stays hidden — we never ship a dead button."
+
+              - name: active
+                label: "Show this card?"
+                widget: boolean
+                required: false
+                default: true
+                hint: "Turn off to hide it without deleting it."
+
+              - name: order
+                label: "Position"
+                widget: number
+                required: false
+                value_type: int
+                min: 1
+                hint: "1 is at the top."
+
+              - name: style
+                label: "Style"
+                widget: select
+                required: false
+                default: default
+                options:
+                  - { label: "Highlighted (black button)", value: primary }
+                  - { label: "Normal", value: default }
+
+              - name: id
+                label: "ID — don't edit"
+                widget: string
+                required: false
+                readonly: true
+
+  # ===========================================================================
+  # CATEGORIES — the 9 sections of the shop, in wedding-day order.
+  # ===========================================================================
+  - name: categories
+    label: Categories
+    description: >-
+      The sections of your shop, in wedding-day order. Rename them and rewrite the
+      wording freely. Do NOT change an ID — that's the invisible string tying every
+      product to its section, and changing it will orphan your products.
+    files:
+      - name: categories
+        label: Categories
+        file: data/categories.json
+        format: json
+        fields:
+          - { name: "$comment", widget: hidden }
+
+          - name: categories
+            label: Categories
+            label_singular: Category
+            widget: list
+            summary: "{{fields.order}}. {{fields.name}}"
+            collapsed: true
+            fields:
+              - name: name
+                label: "Category name"
+                widget: string
+                required: true
+
+              - name: tagline
+                label: "Tagline"
+                widget: string
+                required: false
+                hint: "The short line under the heading."
+
+              - name: blurb
+                label: "Intro paragraph"
+                widget: text
+                required: false
+                hint: >-
+                  A couple of sentences in your voice. This is real writing on the page and it
+                  is a big part of how Google finds you — search is how new brides land on your
+                  shop, so it's worth doing properly.
+
+              - name: order
+                label: "Position on the page"
+                widget: number
+                required: true
+                value_type: int
+                min: 1
+                hint: "1 is first."
+
+              - name: id
+                label: "ID — DON'T EDIT. Products are linked to this."
+                widget: string
+                required: true
+                readonly: true
+
+  # ===========================================================================
+  # SITE SETTINGS — one-off details. Blank social = the icon disappears entirely.
+  # ===========================================================================
+  - name: settings
+    label: Site Settings
+    description: >-
+      Your name, your bio, your socials and what Google shows. Leave anything blank and
+      it simply disappears from the page — we never show a broken or dead link.
+    files:
+      - name: site
+        label: Site Settings
+        file: data/site.json
+        format: json
+        fields:
+          - { name: "$comment", widget: hidden }
+
+          - { name: name, label: "Site name", widget: string, required: true }
+          - name: kicker
+            label: "Little word above your name"
+            widget: string
+            required: false
+            hint: 'Currently "Curated by".'
+          - name: bio
+            label: "Your bio"
+            widget: text
+            required: false
+          - name: headshot
+            label: "Your photo"
+            widget: image
+            required: false
+            choose_url: false
+
+          - name: socials
+            label: "Socials"
+            widget: object
+            collapsed: false
+            hint: "Paste the FULL profile link. Leave one blank and that icon vanishes — no dead icons."
+            fields:
+              - { name: "$comment", widget: hidden }
+              - { name: instagram, label: "Instagram", widget: string, required: false }
+              - { name: tiktok, label: "TikTok", widget: string, required: false }
+              - { name: facebook, label: "Facebook", widget: string, required: false }
+              - { name: pinterest, label: "Pinterest", widget: string, required: false }
+              - { name: youtube, label: "YouTube", widget: string, required: false }
+
+          - name: storefronts
+            label: "Your storefronts"
+            widget: object
+            collapsed: false
+            hint: "Your shops elsewhere. Each one gets its own big card. Blank = hidden."
+            fields:
+              - { name: "$comment", widget: hidden }
+              - { name: amazon, label: "Amazon Storefront link", widget: string, required: false }
+              - { name: shopmy, label: "ShopMy link", widget: string, required: false }
+              - { name: ltk, label: "LTK link", widget: string, required: false }
+
+          - name: seo
+            label: "How you show up on Google"
+            widget: object
+            collapsed: true
+            hint: >-
+              You have no booking form and no contact email on purpose — which means SEARCH is
+              the only way a new bride finds you. This section is what Google reads.
+            fields:
+              - { name: "$comment", widget: hidden }
+              - name: title
+                label: "Google headline"
+                widget: string
+                required: true
+                hint: >-
+                  Keyword first, your name last — that's how you rank for something other than
+                  your own name. Keep it under about 60 characters.
+              - name: description
+                label: "Google description"
+                widget: text
+                required: true
+                hint: "The grey text under the headline. About 150 characters. Make it sound like a shop."
+              - { name: url, label: "Site address", widget: string, required: true, readonly: true }
+              - name: ogImage
+                label: "Share image"
+                widget: string
+                required: false
+                hint: "The picture that shows when someone shares your link. Filename only."
+              - name: city
+                label: "City you work in"
+                widget: string
+                required: false
+                hint: 'Helps local searches like "wedding makeup artist <city>". Worth filling in.'
+
+          - name: disclosure
+            label: "Legal disclosure (leave this alone)"
+            widget: object
+            collapsed: true
+            hint: >-
+              Required by law (FTC) and by Amazon. It's shown above the first affiliate link on
+              every page. The Amazon line is worded exactly the way Amazon demands. Don't reword it.
+            fields:
+              - { name: "$comment", widget: hidden }
+              - name: general
+                label: "Affiliate disclosure"
+                widget: text
+                required: true
+                readonly: true
+              - name: amazon
+                label: "Amazon disclosure — worded by Amazon, do not change"
+                widget: text
+                required: true
+                readonly: true

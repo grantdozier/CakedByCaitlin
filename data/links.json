@@ -1,0 +1,29 @@
+{
+  "$comment": [
+    "FREEFORM LINK CARDS — the Linktree-style hub. Caitlin adds/edits/reorders these in /admin.",
+    "Anything she wants to push this week: a discount code, a giveaway, a guide, a new reel.",
+    "",
+    "Anything with active:false is hidden. Reorder by changing 'order'.",
+    "Seeded empty on purpose — no invented URLs."
+  ],
+  "links": [
+    {
+      "id": "instagram",
+      "title": "Follow on Instagram",
+      "subtitle": "Daily looks, behind the chair",
+      "url": "",
+      "style": "primary",
+      "active": false,
+      "order": 1
+    },
+    {
+      "id": "amazon-storefront",
+      "title": "My Amazon Storefront",
+      "subtitle": "Everything I keep in my kit",
+      "url": "",
+      "style": "default",
+      "active": false,
+      "order": 2
+    }
+  ]
+}

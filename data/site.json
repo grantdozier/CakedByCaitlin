@@ -1,0 +1,62 @@
+{
+  "$comment": [
+    "SITE CONFIG — the one file to fill in with Caitlin's real details.",
+    "",
+    "IMPORTANT: any social handle left as \"\" is HIDDEN from the page entirely.",
+    "We never ship a dead icon. The old site had four social icons all pointing at href=\"#\",",
+    "which did nothing and threw a console error. Empty = gone, not broken.",
+    "",
+    "There is deliberately NO phone and NO email. Caitlin does not want bookings,",
+    "emails, or inbound messages. Every route to her goes through Instagram."
+  ],
+
+  "name": "Caked by Caitlin",
+  "kicker": "Curated by",
+
+  "$tagline_comment": "PLACEHOLDER — Caitlin is writing the real one. Swap it here, nowhere else.",
+  "tagline": "Get your stuff like me.",
+
+  "bio": "Wedding hair & makeup artist. These are the products I actually use on my brides — nothing in here is a guess.",
+
+  "$hero_comment": "Square, not a circle. Loads in black and white; click it and it turns to colour, same as the wall of her work.",
+  "headshot": "images/hero.webp",
+
+  "socials": {
+    "$comment": "Full profile URLs. Leave blank to hide that icon.",
+    "instagram": "",
+    "tiktok": "",
+    "facebook": "",
+    "pinterest": "",
+    "youtube": ""
+  },
+
+  "storefronts": {
+    "$comment": "Her external shops, rendered as their own large cards. Blank = hidden.",
+    "amazon": "",
+    "shopmy": "",
+    "ltk": ""
+  },
+
+  "seo": {
+    "$comment": [
+      "Caitlin has NO booking form and NO email — so search is her only inbound channel,",
+      "and it has to land on the shop and earn through affiliate links.",
+      "Keyword first, brand last: that's how you rank for anything other than your own name."
+    ],
+    "title": "Caked by Caitlin | Wedding Makeup Artist's Product Edit",
+    "description": "The exact products a working wedding makeup artist uses on her brides — skin prep, lips, powders, blush and tools. Shop the edit.",
+    "url": "https://grantdozier.github.io/CakedByCaitlin/",
+    "ogImage": "og-image.jpg",
+    "city": ""
+  },
+
+  "disclosure": {
+    "$comment": [
+      "MUST render above the first affiliate link on EVERY page that has one.",
+      "A footer-only disclosure is not legally sufficient (FTC 16 CFR 255.5).",
+      "The Amazon line is mandated verbatim by the Associates Operating Agreement — do not reword it."
+    ],
+    "general": "The products featured here may contain affiliate links — I earn a commission if you buy through them, at no extra cost to you.",
+    "amazon": "As an Amazon Associate I earn from qualifying purchases."
+  }
+}

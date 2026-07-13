@@ -1,0 +1,23 @@
+{
+  "$comment": [
+    "SHOP MY LOOK — the whole business case, in one feature.",
+    "",
+    "After a wedding, Caitlin ticks the products she actually used on that bride, names it,",
+    "and publishes. She gets a link like /looks/sarah-june-2026.html and texts it to her.",
+    "Every chair she fills becomes recurring affiliate income instead of a one-off fee.",
+    "",
+    "WHY IT'S A PAGE ON HER SITE AND NOT A LIST OF LINKS IN A TEXT MESSAGE:",
+    "Amazon's Operating Agreement restricts affiliate links in SMS/DM to *solicited* messages.",
+    "Texting a bride a raw Amazon link is legally grey. Texting her a link to a public page on",
+    "Caitlin's own domain is completely safe. So the page IS the compliance strategy.",
+    "",
+    "TIMING MATTERS: Amazon's cookie is only 24 HOURS. Send it the same day, while she's still",
+    "buzzing about her face. A week later it earns nothing.",
+    "",
+    "Look pages are PUBLIC but noindex — unlisted, not password-protected. Password-protecting",
+    "them would fail Amazon's 'publicly available' requirement.",
+    "",
+    "productIds must match ids in products.json. A product that isn't 'live' is skipped."
+  ],
+  "looks": []
+}

@@ -4,6 +4,30 @@ on:
   push:
     branches: [main]
 
+  # ─────────────────────────────────────────────────────────────────────────────
+  # WHY THIS TRIGGER EXISTS — do not remove it, the site goes stale without it.
+  #
+  # Caitlin pastes a link -> Sveltia commits (her token, so `push` fires and we
+  # deploy) -> enrich.yml scrapes + affiliate-izes and COMMITS THE RESULT BACK.
+  #
+  # That second commit will NEVER fire `push` above. Two independent reasons:
+  #   1. GitHub does not create workflow runs for pushes made with GITHUB_TOKEN
+  #      (deliberate anti-recursion rule).
+  #   2. enrich.yml tags its commit [skip ci], which suppresses push runs anyway.
+  #
+  # Both are load-bearing for enrich's loop guard, so neither can be removed.
+  # The consequence is that the ENRICHED product — the only version that is
+  # `status: live` and therefore the only version that renders — would sit on
+  # main forever and never reach Pages. She'd paste a link, wait, refresh, and
+  # see nothing. workflow_run is not suppressed by either rule, so we deploy on
+  # enrich completing. This does not re-trigger enrich: deploy pushes nothing.
+  # ─────────────────────────────────────────────────────────────────────────────
+  workflow_run:
+    workflows: ["Enrich products"]
+    types: [completed]
+
+  workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
@@ -11,26 +35,112 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # NOT cancel-in-progress. Cancelling a Pages deploy mid-flight can leave the
+  # deployment stuck "in progress" and needs a manual poke to clear. Two pushes
+  # in a row should queue, not fight — she may well paste two links back to back.
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # On a workflow_run trigger, only deploy if enrich actually succeeded. On push
+    # and workflow_dispatch there is no workflow_run context, so this must pass —
+    # hence the event_name check first, or every normal deploy would be skipped.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t caked-by-caitlin .
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Extract static files
+      # The site is pre-rendered: data/*.json -> static HTML + sitemap.xml.
+      # If the builder is missing we fail loudly rather than quietly shipping
+      # yesterday's HTML.
+      - name: Assert builder exists
         run: |
-          docker create --name temp caked-by-caitlin
-          docker cp temp:/usr/share/nginx/html ./public
-          docker rm temp
-          # Remove Dockerfile and workflow files from deploy artifact
-          rm -f ./public/Dockerfile
-          rm -rf ./public/.github
+          if [ ! -f scripts/build.mjs ]; then
+            echo "::error file=scripts/build.mjs::scripts/build.mjs is missing. Refusing to deploy a stale, un-rebuilt site."
+            exit 1
+          fi
+
+      - name: Build site
+        run: node scripts/build.mjs
+
+      # Allowlist, not denylist. Anything not named here cannot reach Pages —
+      # a denylist is exactly how .git got published last time.
+      # scripts/build.mjs rewrites index.html and sitemap.xml in place at the
+      # repo root, so we publish from the root — but only these paths.
+      - name: Stage artifact
+        run: |
+          mkdir -p _site
+          for item in index.html 404.html robots.txt sitemap.xml og-image.jpg css js images data admin merch; do
+            if [ -e "$item" ]; then
+              cp -r "$item" _site/
+            fi
+          done
+          # Any other top-level page the builder emitted (category pages, etc.)
+          find . -maxdepth 1 -name '*.html' -exec cp -n {} _site/ \;
+          echo "--- artifact contents ---"
+          find _site -maxdepth 2 | sort
+
+      - name: Assert nothing sensitive is in the artifact
+        run: |
+          for forbidden in .git .github Dockerfile .dockerignore scripts node_modules docs read.me; do
+            if [ -e "_site/$forbidden" ]; then
+              echo "::error::'$forbidden' leaked into the deploy artifact."
+              exit 1
+            fi
+          done
+          if [ ! -f _site/index.html ]; then
+            echo "::error::Build produced no index.html."
+            exit 1
+          fi
+          if [ ! -f _site/sitemap.xml ]; then
+            echo "::error::Build produced no sitemap.xml. Search is Caitlin's only inbound channel — refusing to ship without one."
+            exit 1
+          fi
+          # Warn, don't fail: a missing share image is a real SEO/social hole (every link she
+          # texts or puts in her IG bio renders as a blank grey card) but it must not block a
+          # deploy. build.mjs correctly omits og:image entirely rather than point at a 404.
+          if [ ! -f _site/og-image.jpg ]; then
+            echo "::warning::No og-image.jpg — links shared to Instagram/iMessage render with no picture. Add a 1200x630 og-image.jpg at the repo root."
+          fi
+          echo "OK: artifact is clean."
+
+      # The bug that shipped: four social icons with href="#" that did nothing
+      # and threw a console error. Never again.
+      - name: Assert no dead links
+        run: |
+          cat > /tmp/deadlinks.mjs <<'EOF'
+          import { readdirSync, readFileSync } from "node:fs";
+
+          const files = readdirSync("_site").filter((f) => f.endsWith(".html"));
+          const dead = [];
+
+          for (const file of files) {
+            const html = readFileSync(`_site/${file}`, "utf8");
+            // href present but empty or "#"
+            for (const m of html.matchAll(/<a\b[^>]*\shref\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi)) {
+              const href = (m[1] ?? m[2] ?? "").trim();
+              if (href === "" || href === "#") dead.push(`${file}  ${m[0].trim()}`);
+            }
+            // <a> with no href attribute at all
+            for (const m of html.match(/<a\b(?![^>]*\shref\s*=)[^>]*>/gi) ?? []) {
+              dead.push(`${file}  (no href) ${m.trim()}`);
+            }
+          }
+
+          if (dead.length > 0) {
+            console.error('::error::Dead links found (empty href, href="#", or missing href):');
+            for (const d of dead) console.error(`  ${d}`);
+            process.exit(1);
+          }
+          console.log(`OK: no dead links across ${files.length} page(s).`);
+          EOF
+          node /tmp/deadlinks.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -38,7 +148,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./_site
 
   deploy:
     environment:

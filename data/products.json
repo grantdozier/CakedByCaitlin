@@ -1,0 +1,54 @@
+{
+  "$comment": [
+    "SEEDED FROM CAITLIN'S NOTES — names are her shorthand, not verified SKUs.",
+    "Nothing here has a URL, price or image yet, and none of it is invented.",
+    "Workflow: Caitlin opens /admin, pastes the product link into an item, hits Publish.",
+    "The enrich Action then fills in name/brand/image/price and swaps in her affiliate link.",
+    "",
+    "status:",
+    "  needs-link       seeded from her notes, no URL yet     -> HIDDEN on the shop",
+    "  needs-enrichment she pasted a URL, Action hasn't run   -> HIDDEN on the shop",
+    "  needs-attention  enrichment failed, or no affiliate    -> HIDDEN, flagged in /admin",
+    "  live             enriched and monetised                -> VISIBLE on the shop",
+    "",
+    "Only 'live' products render. A card that looks perfect but earns $0 is the failure mode we're avoiding."
+  ],
+  "products": [
+    { "id": "sugar-bear-hair-gummies", "name": "Sugar Bear Hair gummies", "brand": "SugarBearHair", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+    { "id": "medicube", "name": "Medicube", "brand": "Medicube", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "caudalie-eye-cream", "name": "Caudalie eye cream", "brand": "Caudalie", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "under-eye-patches", "name": "Under eye patches", "brand": "", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "byoma-skin-milk", "name": "Byoma skin milk", "brand": "Byoma", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "rhode-skin-milk", "name": "Rhode skin milk", "brand": "Rhode", "category": "getting-ready-prep", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+
+    { "id": "creme-cup", "name": "Crème Cup", "brand": "MAC", "category": "lipstick", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "kim-k", "name": "Kim K", "brand": "", "category": "lipstick", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "pure-hollywood-abh", "name": "Pure Hollywood", "brand": "Anastasia Beverly Hills", "category": "lipstick", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "buxom-lingerie", "name": "Lingerie", "brand": "Buxom", "category": "lipgloss", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+    { "id": "buxom-russian-creme", "name": "Russian Crème", "brand": "Buxom", "category": "lipgloss", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "abh-soft-pink", "name": "Soft Pink", "brand": "Anastasia Beverly Hills", "category": "lipgloss", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "maybelline-opal-pink", "name": "Opal Pink", "brand": "Maybelline", "category": "lipgloss", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "lawless-powder", "name": "Lawless powder", "brand": "Lawless", "category": "powders", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "charlotte-tilbury-powder", "name": "Charlotte Tilbury powder", "brand": "Charlotte Tilbury", "category": "powders", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+    { "id": "mcco-powder", "name": "MCoBeauty powder", "brand": "MCoBeauty", "category": "powders", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "huda-pressed-powder", "name": "Pressed powder", "brand": "Huda Beauty", "category": "powders", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "hourglass-blush", "name": "Hourglass blush", "brand": "Hourglass", "category": "blushes", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+    { "id": "loreal-true-match-blush", "name": "True Match blush", "brand": "L'Oréal", "category": "blushes", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "rare-beauty-blush", "name": "Rare Beauty blush", "brand": "Rare Beauty", "category": "blushes", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "milani-blush", "name": "Milani blush", "brand": "Milani", "category": "blushes", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "byoma-cleanser", "name": "Byoma cleanser", "brand": "Byoma", "category": "end-of-night", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "paw-paw-beauty-sponges", "name": "Paw Paw beauty sponges", "brand": "", "category": "tools", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "mario-brushes", "name": "Mario brushes", "brand": "Makeup By Mario", "category": "tools", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": true, "status": "needs-link" },
+    { "id": "triangle-puffs", "name": "Triangle puffs", "brand": "", "category": "tools", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+
+    { "id": "lipstick-cases", "name": "Lipstick cases", "brand": "", "category": "accessories", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "makeup-bags", "name": "Makeup bags", "brand": "", "category": "accessories", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "hulken-bags", "name": "Hulken bags", "brand": "HULKEN", "category": "accessories", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" },
+    { "id": "clutches", "name": "Clutches", "brand": "", "category": "accessories", "note": "", "url": "", "affiliateUrl": "", "affiliateNetwork": "", "image": "", "price": "", "featured": false, "status": "needs-link" }
+  ]
+}

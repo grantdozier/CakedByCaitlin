@@ -1,0 +1,82 @@
+{
+  "$comment": [
+    "MERCH — things Caitlin actually SELLS (as opposed to affiliate links she earns commission on).",
+    "",
+    "Checkout is a Stripe Payment Link. No monthly fee, and Stripe's 'custom fields' let the",
+    "buyer type their initials at checkout — which is the whole point for the monogrammed items.",
+    "",
+    "Why not Shopify: its Buy Button cannot collect line-item properties at all (open issue #598),",
+    "so it physically cannot do a personalised tote. It's also $39/mo. Both disqualifying.",
+    "",
+    "NOT IN HERE, ON PURPOSE — from Caitlin's notes but not actually sellable by her:",
+    "  HULKEN bags     trademarked brand, wholesale-only, $99+ retail -> affiliate (accessories)",
+    "  Lipstick cases  not in any print-on-demand catalogue           -> affiliate (accessories)",
+    "  Clutches        not in any print-on-demand catalogue           -> affiliate (accessories)",
+    "",
+    "HOW CAITLIN ADDS ONE: create the Payment Link in Stripe (add a custom text field called",
+    "'Initials' for personalised items), copy the URL, paste it into /admin. See CAITLIN-HOWTO.md.",
+    "Items with no stripeUrl show an 'Ask Caitlin' button instead of a Buy button — never a dead one."
+  ],
+  "items": [
+    {
+      "id": "bride-robe",
+      "name": "Bride Robe",
+      "category": "getting-ready-outfits",
+      "note": "",
+      "image": "",
+      "price": "",
+      "personalized": true,
+      "personalizationLabel": "Initials or name",
+      "stripeUrl": "",
+      "status": "needs-setup"
+    },
+    {
+      "id": "bride-pjs",
+      "name": "Bride Pyjamas",
+      "category": "getting-ready-outfits",
+      "note": "",
+      "image": "",
+      "price": "",
+      "personalized": true,
+      "personalizationLabel": "Initials or name",
+      "stripeUrl": "",
+      "status": "needs-setup"
+    },
+    {
+      "id": "bridesmaid-pjs",
+      "name": "Bridesmaid Pyjamas",
+      "category": "getting-ready-outfits",
+      "note": "",
+      "image": "",
+      "price": "",
+      "personalized": true,
+      "personalizationLabel": "Initials or name",
+      "stripeUrl": "",
+      "status": "needs-setup"
+    },
+    {
+      "id": "bridesmaid-slippers",
+      "name": "Bridesmaid Slippers",
+      "category": "getting-ready-outfits",
+      "note": "",
+      "image": "",
+      "price": "",
+      "personalized": false,
+      "personalizationLabel": "",
+      "stripeUrl": "",
+      "status": "needs-setup"
+    },
+    {
+      "id": "monogram-tote",
+      "name": "Tote Bag with Initials",
+      "category": "getting-ready-outfits",
+      "note": "",
+      "image": "",
+      "price": "",
+      "personalized": true,
+      "personalizationLabel": "Initials (up to 3 letters)",
+      "stripeUrl": "",
+      "status": "needs-setup"
+    }
+  ]
+}

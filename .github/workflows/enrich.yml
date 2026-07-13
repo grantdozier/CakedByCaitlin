@@ -1,0 +1,143 @@
+name: Enrich products
+
+# Caitlin pastes a product link into data/products.json (via /admin, from her phone,
+# possibly at a wedding). That commit lands on main and this Action does the rest:
+# scrape -> affiliate-ize -> WebP -> build -> commit back.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/products.json'
+      - 'data/affiliates.json'
+      - 'scripts/enrich.mjs'
+      - 'scripts/images.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # If she pastes two links back to back, don't let two runs race to commit products.json.
+  group: enrich-main
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # INFINITE-LOOP GUARD. This job COMMITS data/products.json back to main, and
+    # this workflow TRIGGERS on pushes that touch data/products.json. Left alone,
+    # that is a runaway Action loop. Two independent guards, either one sufficient:
+    #
+    #   1. The commit message ends with [skip ci]. GitHub natively refuses to start
+    #      a workflow run for a push whose head commit message contains [skip ci].
+    #      This is the primary guard and it stops the loop before a runner is spun up.
+    #
+    #   2. This `if` — we refuse to run when the pusher IS our own bot. This is the
+    #      backstop for the case where guard #1 is defeated (someone edits the commit
+    #      message, or a future workflow re-pushes). Belt and braces on purpose:
+    #      a runaway loop burns Actions minutes and rewrites her data unattended.
+    #
+    # Note `workflow_dispatch` still works: github.actor is then the human who clicked.
+    # ─────────────────────────────────────────────────────────────────────────────
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 — a shallow clone cannot reliably rebase onto a moved main,
+          # and the push-retry loop below needs to do exactly that.
+          fetch-depth: 0
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # SYNC TO THE TIP OF MAIN BEFORE DOING ANY WORK.
+      #
+      # The `concurrency` group above serialises runs, but a QUEUED run was checked out
+      # at the sha of ITS trigger — an older commit. If Caitlin pastes two links back to
+      # back (the exact scenario the concurrency comment anticipates), run #2 would start
+      # from a products.json that predates run #1's enrichment, re-enrich from stale data,
+      # and its commit would REVERT run #1's product back to needs-enrichment — silently,
+      # and permanently, because a GITHUB_TOKEN push does not re-trigger this workflow.
+      # (It would also collide on rebase, leaving the push loop below thrashing.)
+      #
+      # Resetting to origin/main first costs nothing and means we always enrich the latest
+      # truth — which by then contains BOTH of her pasted links.
+      # ─────────────────────────────────────────────────────────────────────────────
+      - name: Sync to latest main
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+          echo "Enriching from $(git rev-parse --short HEAD): $(git log -1 --pretty=%s)"
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # No npm install, no cache: enrich.mjs and images.mjs have ZERO dependencies.
+
+      - name: Install cwebp
+        # images.mjs shells out to cwebp rather than pulling sharp from npm.
+        run: sudo apt-get update && sudo apt-get install -y webp
+
+      - name: Enrich products (scrape + affiliate-ize)
+        run: node scripts/enrich.mjs
+
+      - name: Convert product images to WebP
+        run: node scripts/images.mjs
+
+      - name: Build site
+        # Another agent owns scripts/build.mjs. Tolerate it not existing yet.
+        run: |
+          if [ -f scripts/build.mjs ]; then
+            node scripts/build.mjs
+          else
+            echo "scripts/build.mjs not present yet — skipping build step."
+          fi
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # `git add -A`, NOT an explicit pathspec list.
+          #
+          # This was `git add data/products.json images/products index.html || true`,
+          # which is a silent data-loss trap: `images/products/` does not exist until the
+          # first product image is downloaded, and `git add` ABORTS THE WHOLE ADD on a
+          # pathspec that matches nothing ("fatal: pathspec ... did not match any files")
+          # — it does not skip just that one path. The `|| true` then swallowed the error,
+          # `git diff --staged --quiet` saw an empty index, and the job cheerfully printed
+          # "Nothing changed — no commit" and exited 0. Enrichment results were computed,
+          # then thrown away, on every run until an image happened to exist. Green build,
+          # no product on the shop, nothing to debug.
+          #
+          # -A stages whatever actually changed (products.json, sitemap.xml, index.html,
+          # images/products/*.webp) and cannot fail on a path that isn't there.
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Nothing changed — no commit."
+            exit 0
+          fi
+          # [skip ci] is load-bearing: it is guard #1 against the enrich -> commit -> enrich loop.
+          # (Deploy still happens — deploy.yml listens for this workflow completing, not for
+          # the push, precisely because this commit cannot fire a push event.)
+          git commit -m "Enrich products [skip ci]"
+
+          # Rebase-and-retry rather than a bare push. The concurrency group queues a second
+          # run behind the first, but the queued run was checked out at the OLDER sha, so by
+          # the time it pushes, main has already moved to the first run's enrich commit and a
+          # plain `git push` is rejected non-fast-forward. That is the exact scenario the
+          # concurrency comment above anticipates — "if she pastes two links back to back" —
+          # so the second product would fail to publish with a red X she will never look at.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected (main moved). Rebasing and retrying…"
+            git pull --rebase --autostash origin main
+          done
+          echo "::error::Could not push enrichment results after 3 attempts."
+          exit 1

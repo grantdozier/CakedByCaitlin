@@ -1,0 +1,27 @@
+# ⚠️ READ THIS BEFORE YOU RELY ON THIS FILE.
+#
+# Crawlers only ever read robots.txt from the DOMAIN ROOT. This site is a GitHub
+# *project* page, so it lives at grantdozier.github.io/CakedByCaitlin/ and this file
+# is served at /CakedByCaitlin/robots.txt — a path Google never looks at. The only
+# robots.txt Google reads for this domain is grantdozier.github.io/robots.txt, which
+# belongs to a different repo entirely.
+#
+# THEREFORE, TODAY:
+#   - The "Disallow: /admin/" below protects NOTHING. Do not treat it as the thing
+#     keeping the editor out of search. That job is done by the
+#     <meta name="robots" content="noindex, nofollow"> tag inside admin/index.html,
+#     which IS honoured because it travels with the page. Never remove that tag.
+#   - The "Sitemap:" line below is NOT how Google finds the sitemap. Submit
+#     https://grantdozier.github.io/CakedByCaitlin/sitemap.xml by hand, once, in
+#     Google Search Console. Nothing in this repo does that for you.
+#
+# This file becomes live and correct the moment the site moves to a custom domain
+# (e.g. cakedbycaitlin.com), at which point it starts being served from the root.
+# It is kept for that reason and costs nothing.
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+
+Sitemap: https://grantdozier.github.io/CakedByCaitlin/sitemap.xml

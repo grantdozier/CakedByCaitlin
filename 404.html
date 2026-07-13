@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | Caked by Caitlin</title>
+    <!-- Don't let a 404 into the index; it dilutes the pages that matter. -->
+    <meta name="robots" content="noindex, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Self-contained on purpose: a 404 must render even if the stylesheet
+           is the thing that 404'd. */
+        :root {
+            --off-white: #FAF8F5;
+            --ink: #14110F;
+            --muted: #6B6560;
+            --line: #E4DED6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            background: var(--off-white);
+            color: var(--ink);
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            font-weight: 300;
+            text-align: center;
+            -webkit-font-smoothing: antialiased;
+        }
+        main { max-width: 30rem; width: 100%; }
+        .code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1.75rem;
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(2.25rem, 8vw, 3.25rem);
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.25rem;
+        }
+        p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1.15rem 1.5rem;
+            background: var(--ink);
+            color: var(--off-white);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            border: 1px solid var(--ink);
+            transition: opacity 0.25s ease;
+        }
+        .btn:hover, .btn:focus-visible { opacity: 0.82; }
+        .btn-secondary {
+            margin-top: 0.75rem;
+            background: transparent;
+            color: var(--ink);
+            border-color: var(--line);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="code">Error 404</p>
+        <h1>This page has been packed away.</h1>
+        <p>The link you followed doesn&rsquo;t exist anymore &mdash; but the edit does. Every product I actually use on my brides is one tap away.</p>
+        <a class="btn" href="/CakedByCaitlin/">Shop the Edit</a>
+        <a class="btn btn-secondary" href="/CakedByCaitlin/#links">All Links</a>
+    </main>
+</body>
+</html>

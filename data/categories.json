@@ -1,0 +1,68 @@
+{
+  "$comment": "Caitlin's shop, ordered as a wedding-day timeline. Order here is the order on shop.html. Editable in /admin.",
+  "categories": [
+    {
+      "id": "getting-ready-prep",
+      "name": "Getting Ready Prep",
+      "tagline": "The night before and the morning of",
+      "blurb": "Skin prep is the whole game. This is what I have my brides using in the run-up so the makeup sits right on the day.",
+      "order": 1
+    },
+    {
+      "id": "lipstick",
+      "name": "Lipstick",
+      "tagline": "The shades I reach for most",
+      "blurb": "Long-wear shades that survive the first look, the toasts, and the kiss.",
+      "order": 2
+    },
+    {
+      "id": "lipgloss",
+      "name": "Lip Gloss",
+      "tagline": "For the shine that photographs",
+      "blurb": "Gloss reads beautifully on camera. These are the ones that don't go sticky.",
+      "order": 3
+    },
+    {
+      "id": "powders",
+      "name": "Powders",
+      "tagline": "Set it and forget it",
+      "blurb": "The difference between makeup that lasts eight hours and makeup that lasts two.",
+      "order": 4
+    },
+    {
+      "id": "blushes",
+      "name": "Blushes",
+      "tagline": "Colour that brings you back to life",
+      "blurb": "From a whisper of flush to a full romantic glow.",
+      "order": 5
+    },
+    {
+      "id": "end-of-night",
+      "name": "End of the Night",
+      "tagline": "Take it all off, gently",
+      "blurb": "You will be tired. Your skin still deserves this.",
+      "order": 6
+    },
+    {
+      "id": "tools",
+      "name": "Tools",
+      "tagline": "What's actually in my kit",
+      "blurb": "The brushes, sponges and puffs I use on real clients — not the pretty ones that sit in a drawer.",
+      "order": 7
+    },
+    {
+      "id": "accessories",
+      "name": "Accessories",
+      "tagline": "Carry it beautifully",
+      "blurb": "Bags, cases and clutches worth the counter space.",
+      "order": 8
+    },
+    {
+      "id": "getting-ready-outfits",
+      "name": "Getting Ready Outfits",
+      "tagline": "For you and your girls",
+      "blurb": "Robes, pyjamas and personalised pieces for the photos you'll actually frame.",
+      "order": 9
+    }
+  ]
+}

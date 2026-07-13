@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!--
+    The admin is a private editing tool, not a page. It must never appear in search
+    results, and it must never compete with the shop for ranking.
+  -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <title>Caked by Caitlin — Editor</title>
+  <link rel="icon" href="../favicon.svg">
+  <!-- Without this, iOS uses a blurry screenshot of the page as the home-screen icon. -->
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <!--
+    Home-screen install: Caitlin taps this icon and lands straight in the editor.
+
+    ⚠️ WE DELIBERATELY DO **NOT** SET <meta name="apple-mobile-web-app-capable" content="yes">.
+    That tag makes the home-screen icon launch in iOS *standalone* mode, which breaks
+    this app in two separate ways:
+
+      1. Standalone web apps get their OWN storage container, separate from Safari.
+         The login she did in Safari does NOT carry over — she'd be logged out again,
+         inside the one context where logging in is hardest.
+      2. Sveltia's "Sign in with GitHub" opens a popup and waits for it to post the
+         token back. In iOS standalone mode window.open() hands the URL to Safari as a
+         separate app, the opener link is severed, and the token never comes back. She
+         taps Login, something flashes, and she is still logged out. Forever.
+
+    Without the tag, the home-screen icon opens the editor in normal Safari: same
+    session, popups work, login works. It still looks and feels like an app to her.
+    apple-mobile-web-app-title below still names the icon, standalone or not.
+  -->
+  <meta name="apple-mobile-web-app-title" content="Caitlin Editor">
+  <meta name="theme-color" content="#111111">
+
+  <style>
+    /* Shown only until Sveltia boots, and if it ever fails to boot. */
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    #boot { padding: 3rem 1.5rem; text-align: center; color: #444; }
+    #boot h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    #boot.failed h1 { color: #a11; }
+    #setup-warning {
+      position: fixed; inset: auto 0 0 0; z-index: 99999;
+      background: #a11; color: #fff; padding: 0.75rem 1rem;
+      font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="boot">
+    <h1>Loading your editor…</h1>
+    <p>One moment.</p>
+  </div>
+
+  <!--
+    ⚠️ THE VERSION IS PINNED ON PURPOSE. DO NOT CHANGE IT TO @latest.
+
+    Sveltia CMS is 0.x software and ships MULTIPLE RELEASES PER DAY. Floating on @latest
+    means the CMS Caitlin opens is a build nobody has ever tested — and the moment she is
+    most likely to open it is on her phone, at a wedding, with no one available to help.
+    We pin, we test the new pin ourselves, and only then do we bump it.
+
+    ⚠️ NO type="module" HERE, EITHER. dist/sveltia-cms.js is the CLASSIC build, not an ES
+    module. Marking it type="module" makes Sveltia itself log:
+      "The Sveltia CMS script is not an ES module. Remove the type="module" attribute
+       from the <script> tag to avoid unexpected behavior when using the JavaScript API."
+    (It also nulls out document.currentScript, so the CMS's own auto-init has to fall back
+    to scraping the DOM for its own <script> tag.) The upstream docs ship it without the
+    attribute; so do we. If you ever want a real ES module, the file is sveltia-cms.MJS.
+
+    To upgrade: bump the version below, open /admin locally, add + publish a throwaway
+    product, confirm the commit lands on main and that no fields were dropped from
+    data/products.json, then delete the throwaway. Only then ship it.
+  -->
+  <script src="https://unpkg.com/@sveltia/cms@0.170.8/dist/sveltia-cms.js"></script>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // Boot watchdog.
+    //
+    // Sveltia does NOT replace the document body — it APPENDS its own app shell
+    // (currently <div class="sui app-shell …">, a class name we must not depend on).
+    // So the fallback message has to be taken down by us, or it sits above the login
+    // screen forever telling her the editor failed to load while the editor is right
+    // there. (That is exactly what the previous version of this file did: it looked
+    // for "#nc-root, .sveltia-cms, [data-sveltia-cms]", none of which Sveltia renders,
+    // and only looked once, 500ms after load.)
+    //
+    // Instead: poll for ANY element the CMS added to <body>, whatever it calls itself.
+    // If nothing appears within 20 seconds, say so honestly instead of lying about
+    // "10 seconds" and then hanging around.
+    // ---------------------------------------------------------------------------
+    (function () {
+      var boot = document.getElementById('boot');
+      var started = Date.now();
+
+      var appeared = function () {
+        return [].some.call(document.body.children, function (el) {
+          return el !== boot && el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE' && el.id !== 'setup-warning';
+        });
+      };
+
+      var timer = setInterval(function () {
+        if (appeared()) {
+          clearInterval(timer);
+          if (boot && boot.parentNode) boot.parentNode.removeChild(boot);
+          return;
+        }
+        if (Date.now() - started > 20000) {
+          clearInterval(timer);
+          if (boot) {
+            boot.className = 'failed';
+            boot.innerHTML =
+              '<h1>The editor didn’t load</h1>' +
+              '<p>Check your internet connection and pull down to refresh this page.</p>' +
+              '<p>If it still won’t load, screenshot this and send it to Grant — nothing you’ve ' +
+              'saved before is lost, the shop is still up.</p>';
+          }
+        }
+      }, 300);
+    })();
+
+    // ---------------------------------------------------------------------------
+    // Setup guard. Until a developer completes docs/CMS-SETUP.md, backend.base_url in
+    // config.yml is still the placeholder, so "Sign in with GitHub" sends her to a
+    // domain that does not exist and she gets a browser DNS error with no explanation.
+    // Say plainly what is wrong instead. (Local dev / "Work with Local Repository" is
+    // unaffected, which is why we only warn and never block.)
+    // ---------------------------------------------------------------------------
+    fetch('config.yml', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (yml) {
+        if (yml.indexOf('TODO-REPLACE-WITH-YOUR-CLOUDFLARE-WORKER') === -1) return;
+        var b = document.createElement('div');
+        b.id = 'setup-warning';
+        b.textContent =
+          'Setup is not finished: the login server has not been connected yet, so ' +
+          '"Sign in with GitHub" will fail. Developer: see docs/CMS-SETUP.md, step 5.';
+        document.body.appendChild(b);
+      })
+      .catch(function () { /* offline, or served without config.yml — nothing useful to say */ });
+  </script>
+</body>
+</html>

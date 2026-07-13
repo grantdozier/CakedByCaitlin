@@ -1,0 +1,65 @@
+{
+  "$comment": [
+    "AFFILIATE RULES — maintained by the DEVELOPER, not by Caitlin. She never sees this file.",
+    "The enrich Action reads this to turn a raw retailer URL into Caitlin's commissionable link.",
+    "",
+    "TWO SEPARATE RAILS. ShopMy does not monetise Amazon at all (their words:",
+    "'we do not offer commissions on Amazon products directly'). So Amazon needs its own",
+    "Associates tag no matter what, and Amazon URLs must NEVER be wrapped in ShopMy —",
+    "that would make the referring site ambiguous to Amazon, which is a cloaking violation.",
+    "",
+    "HARD RULE FROM AMAZON'S OPERATING AGREEMENT: no link shorteners, no self-hosted",
+    "redirects (/go/product), no cloaking. Links must be direct <a href> on a public page.",
+    "Click tracking is therefore client-side only. Do not 'improve' this by adding a redirect."
+  ],
+
+  "accounts": {
+    "$comment": "FILL THESE IN once Caitlin is approved. Until then, products publish unmonetised and get flagged in /admin.",
+    "amazonTag": "",
+    "shopMyUserId": ""
+  },
+
+  "rules": {
+    "amazon": {
+      "domains": ["amazon.com", "www.amazon.com", "amzn.to", "a.co"],
+      "strategy": "append-query-param",
+      "param": "tag",
+      "value": "{amazonTag}",
+      "note": "Exactly what Amazon's own SiteStripe does. Compliant. Cookie is only 24h — send look pages the same day."
+    },
+    "shopmy": {
+      "strategy": "wrap",
+      "template": "https://go.shopmy.us/apx/{shopMyUserId}?url={encodedUrl}",
+      "note": "ShopMy's documented wrap-any-link format. Only applied to retailers we know are in their network.",
+      "domains": [
+        "sephora.com",
+        "ulta.com",
+        "maccosmetics.com",
+        "anastasiabeverlyhills.com",
+        "charlottetilbury.com",
+        "hudabeauty.com",
+        "rarebeauty.com",
+        "hourglasscosmetics.com",
+        "lawlessbeauty.com",
+        "buxomcosmetics.com",
+        "byoma.com",
+        "rhodeskin.com",
+        "caudalie.com",
+        "medicube.us",
+        "themedicube.com",
+        "milanicosmetics.com",
+        "maybelline.com",
+        "lorealparisusa.com",
+        "makeupbymario.com",
+        "mcobeauty.com",
+        "target.com",
+        "walmart.com"
+      ]
+    }
+  },
+
+  "fallback": {
+    "strategy": "publish-raw-and-flag",
+    "note": "Unknown domain: keep the raw link so the card still works, but mark status=needs-attention so Caitlin sees in /admin that it is NOT earning. Never silently pretend a link is monetised."
+  }
+}
