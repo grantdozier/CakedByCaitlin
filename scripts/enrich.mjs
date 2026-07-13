@@ -49,12 +49,20 @@ const UA =
 
 /* MEASURED IN CI against 14 real product URLs — this is not speculation:
  *
- *   WORKS    the brand's own site — rhodeskin.com, byoma.com, anastasiabeverlyhills.com
- *   BLOCKED  sephora.com, maccosmetics.com, charlottetilbury.com, maybelline.com, caudalie.com
+ *   WORKS    sephora.com, rhodeskin.com, byoma.com, anastasiabeverlyhills.com  — 9 of 14
+ *   BLOCKED  maccosmetics.com, charlottetilbury.com, maybelline.com, caudalie.com
  *
- * Sephora is behind serious bot protection and will NEVER scrape, whatever headers we send.
- * DO NOT keep bolting on headers trying to beat it: that is an arms race we lose, and it
- * shades into circumventing an anti-bot control we have no business circumventing.
+ * Sephora returned NOTHING on the first run and only started working once the request carried
+ * the full browser header set below (the Sec-Fetch-* headers are what unblocked it). Do not
+ * strip them.
+ *
+ * Equally: do NOT keep bolting on more headers to chase the last four. That is an arms race we
+ * lose, and it shades into circumventing an anti-bot control we have no business circumventing.
+ * Four blocked out of fourteen is a fine place to stop.
+ *
+ * PRICES are the weaker signal — most retailers render them client-side, so JSON-LD/OG often
+ * carries no price at all. Only the brand's own site reliably yields one. A card with no price
+ * still looks right; don't force it.
  *
  * The real answer is the fallback. A blocked product still publishes with a working link and
  * a typographic tile, and Caitlin can drop a screenshot in /admin. That screenshot path exists
