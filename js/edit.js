@@ -92,7 +92,9 @@
 
     function signIn() {
         if (!AUTH_BASE) {
-            setStatus('Editing is not set up yet — see docs/LOGINS.md', true);
+            // User-facing: Caitlin might tap this before the OAuth worker is deployed. Do NOT
+            // reference a developer doc here — she has no idea what LOGINS.md is.
+            setStatus('Photo editing is being switched on — Grant will text you when it’s ready.', false);
             return;
         }
 
