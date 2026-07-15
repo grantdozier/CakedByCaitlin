@@ -1,0 +1,82 @@
+{
+  "$comment": [
+    "Content for the self-service setup page at /setup/.",
+    "",
+    "This is what Caitlin follows to bring the site fully to life — accept her GitHub invite,",
+    "get her affiliate accounts, plug in her IDs. Plain English, real steps, copy buttons.",
+    "",
+    "Anything with a 'copy' field renders a one-tap copy button next to it.",
+    "Anything with a 'field' maps to a live 'connected / not yet' status the page computes from",
+    "the real site config, so she always sees what's actually done vs still to do."
+  ],
+
+  "intro": "Everything here is a one-time setup. Do it once and you're done forever. Take the steps in order — each one takes a few minutes, and there's a copy button anywhere you need to paste something.",
+
+  "steps": [
+    {
+      "id": "github",
+      "title": "Accept your invite to the site",
+      "time": "1 minute",
+      "why": "This is what lets you log in and change things. Grant already sent you the invite — you just have to say yes.",
+      "status": { "field": "github", "label": "Invite accepted" },
+      "actions": [
+        { "type": "step", "text": "Open your email and look for a message from GitHub — subject line is about being invited to 'grantdozier/CakedByCaitlin'." },
+        { "type": "link", "text": "Or accept it directly here", "url": "https://github.com/grantdozier/CakedByCaitlin/invitations", "button": "Open the invite" },
+        { "type": "step", "text": "Click the green Accept button. That's it — you now have access." }
+      ]
+    },
+
+    {
+      "id": "editing",
+      "title": "Add your shop to your phone",
+      "time": "2 minutes",
+      "why": "So changing a photo or adding a product is one tap away, like any other app.",
+      "status": { "field": "auth", "label": "Editing turned on" },
+      "actions": [
+        { "type": "step", "text": "On your phone, open this link:" },
+        { "type": "copy", "text": "Your editing link", "copy": "https://grantdozier.github.io/CakedByCaitlin/?edit=1", "note": "Paste it into Safari or Chrome on your phone." },
+        { "type": "step", "text": "Tap Sign in with GitHub the first time. It remembers you after that." },
+        { "type": "step", "text": "Tap the Share button, then Add to Home Screen. Name it 'My Shop'. Now it's an icon you tap, just like Instagram." }
+      ]
+    },
+
+    {
+      "id": "shopmy",
+      "title": "Get your ShopMy account (the big one)",
+      "time": "10 minutes to apply",
+      "why": "This is how you get paid on almost everything you love — Sephora, Ulta, Charlotte Tilbury, Rare Beauty, Rhode, Byoma, and more. One account covers most of your list. It pays out every Friday.",
+      "status": { "field": "shopmy", "label": "ShopMy connected" },
+      "actions": [
+        { "type": "link", "text": "Apply to ShopMy", "url": "https://shopmy.us/creators", "button": "Apply now" },
+        { "type": "step", "text": "Sign up with your Instagram. Approval is usually quick." },
+        { "type": "step", "text": "Once you're in, go to Account Settings and find your creator ID — it's the number in your shop link (go.shopmy.us/…)." },
+        { "type": "step", "text": "Text that number to Grant, or paste it into the site settings. That's the one thing that turns your links on." },
+        { "type": "step", "text": "When you post these links on Instagram or TikTok, add #ad or 'commissionable link' somewhere in the caption. The website handles the fine print for you, but your posts are on you." }
+      ]
+    },
+
+    {
+      "id": "amazon",
+      "title": "Get your Amazon account",
+      "time": "10 minutes to apply",
+      "why": "For the things that live on Amazon — your Sugar Bear gummies, beauty sponges, triangle puffs. ShopMy does NOT cover Amazon, so this is its own separate thing.",
+      "status": { "field": "amazon", "label": "Amazon connected" },
+      "warning": "One real catch: Amazon closes your account if you don't make 3 sales in your first 180 days. So apply when you're ready to actually post a few links, not months before.",
+      "actions": [
+        { "type": "link", "text": "Apply to Amazon Associates", "url": "https://affiliate-program.amazon.com/", "button": "Apply now" },
+        { "type": "step", "text": "When it asks for your website, paste this in:" },
+        { "type": "copy", "text": "Your website address", "copy": "https://grantdozier.github.io/CakedByCaitlin/" },
+        { "type": "step", "text": "When you're approved, find your tag (it looks like yourname-20) and send it to Grant, or paste it into the site settings." }
+      ]
+    }
+  ],
+
+  "disclosureBlock": {
+    "title": "The one legal thing (already handled for you)",
+    "body": "By law, you have to tell people your links might earn you a commission. The website already says this in the right spot on every page, so you don't have to think about it here. The exact wording, in case you ever need it for an Instagram caption:",
+    "copies": [
+      { "text": "For a caption or bio", "copy": "The products I share may contain affiliate links — I earn a small commission if you buy through them, at no extra cost to you." },
+      { "text": "For Amazon links specifically", "copy": "As an Amazon Associate I earn from qualifying purchases." }
+    ]
+  }
+}

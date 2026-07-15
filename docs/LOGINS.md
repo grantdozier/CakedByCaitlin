@@ -1,5 +1,11 @@
 # Logins — who needs what
 
+> **Status:** Caitlin's GitHub account (`cakedbycaitlin`) has been **invited as a collaborator
+> with write access** — she just needs to accept it (email, or github.com/notifications).
+> What's left is entirely on you: the GitHub OAuth App + the Cloudflare Worker below (~10 min,
+> one setup covers both `/admin` and the in-place editor). Until then, "Sign in with GitHub"
+> says *"Editing is not set up yet"* instead of failing cryptically.
+
 There are exactly **two accounts** in this system. Nothing else. No database, no server,
 no monthly bill.
 
@@ -30,20 +36,17 @@ The tradeoff is one awkward signup. That's it. Do it *for* her — don't make he
 
 I can't do these — they need a browser signed in as you. Together they take about ten minutes.
 
-### 1. Create a GitHub account for Caitlin (2 min)
+### 1. GitHub account + collaborator invite — ✅ DONE
 
-Go to https://github.com/signup. Use **her** email so password resets reach her.
-
-Suggested username: `cakedbycaitlin`
-
-Write the username and password straight into her password manager (or yours, shared with her).
-**She will never need to type them again after step 3.**
-
-Then tell me the username and I'll add her as a collaborator from here — that part I can do:
+Caitlin created `cakedbycaitlin`, and she's been invited as a collaborator (write access):
 
 ```
-gh api -X PUT repos/grantdozier/CakedByCaitlin/collaborators/<her-username> -f permission=push
+gh api -X PUT repos/grantdozier/CakedByCaitlin/collaborators/cakedbycaitlin -f permission=push
 ```
+
+**She still has to accept the invite** — it's in her email, or at
+https://github.com/grantdozier/CakedByCaitlin/invitations. This is step 1 on her own setup
+page (`/setup/`), so she'll be walked through it.
 
 ### 2. Create a GitHub OAuth App (3 min)
 

@@ -502,6 +502,171 @@ function buildLooks() {
   return written;
 }
 
+/* ---------- the self-service setup page at /setup/ ----------
+ *
+ * This is where Caitlin brings the site fully to life on her own: accept her GitHub invite,
+ * get her affiliate accounts, plug in her IDs. It's a real page on her own site (not a
+ * markdown file she'd never open), with copy buttons everywhere and a LIVE status for each
+ * thing — computed from the actual config, so she always sees what's really done vs still to do.
+ *
+ * noindex: it's an operations page, not content.
+ */
+function buildSetup() {
+  const setup = readJSON('data/setup.json');
+  const accounts = affiliates.accounts || {};
+
+  /* Real, computed status. Green only when the config actually has the value — no fake
+   * "you're all set" that the old booking form would have shown. github can't be detected at
+   * build time (it needs her auth), so that one is a checkbox she ticks, remembered locally. */
+  const connected = {
+    auth: Boolean(site.authBase),
+    shopmy: Boolean(accounts.shopMyUserId),
+    amazon: Boolean(accounts.amazonTag),
+  };
+
+  const copyBtn = (label, value) =>
+    `<div class="cp">
+        <div class="cp-body">
+          <span class="cp-label">${esc(label)}</span>
+          <code class="cp-value">${esc(value)}</code>
+        </div>
+        <button type="button" class="cp-btn" data-copy="${esc(value)}" aria-label="Copy ${esc(label)}">
+          <span class="cp-btn-text">Copy</span>
+        </button>
+      </div>`;
+
+  const action = (a) => {
+    if (a.type === 'copy') {
+      return copyBtn(a.text, a.copy) + (a.note ? `<p class="step-note">${esc(a.note)}</p>` : '');
+    }
+    if (a.type === 'link') {
+      return `<a class="setup-link" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.button || a.text)} <span aria-hidden="true">↗</span></a>`;
+    }
+    return `<p class="step-line">${esc(a.text)}</p>`;
+  };
+
+  const steps = setup.steps
+    .map((s, i) => {
+      const field = s.status && s.status.field;
+      const isLive = field && field in connected;
+      const done = isLive ? connected[field] : false;
+
+      const statusPill = s.status
+        ? `<span class="step-status${done ? ' is-done' : ''}" ${!isLive ? `data-local="${esc(s.id)}"` : ''}>
+            <span class="step-status-dot"></span>
+            <span class="step-status-text">${done ? esc(s.status.label) : (isLive ? 'Not connected yet' : 'Mark done')}</span>
+          </span>`
+        : '';
+
+      return `<section class="step" id="step-${esc(s.id)}">
+        <div class="step-head">
+          <span class="step-num">${i + 1}</span>
+          <div class="step-headings">
+            <h2 class="step-title">${esc(s.title)}</h2>
+            <span class="step-time">${esc(s.time)}</span>
+          </div>
+          ${statusPill}
+        </div>
+        <p class="step-why">${esc(s.why)}</p>
+        ${s.warning ? `<p class="step-warn">${esc(s.warning)}</p>` : ''}
+        <div class="step-actions">
+          ${s.actions.map(action).join('\n          ')}
+        </div>
+      </section>`;
+    })
+    .join('\n\n      ');
+
+  const disc = setup.disclosureBlock;
+  const discBlock = `<section class="step step--soft">
+        <h2 class="step-title">${esc(disc.title)}</h2>
+        <p class="step-why">${esc(disc.body)}</p>
+        <div class="step-actions">
+          ${disc.copies.map((c) => copyBtn(c.text, c.copy)).join('\n          ')}
+        </div>
+      </section>`;
+
+  const page = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Set up your shop — ${esc(site.name)}</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="setup-page">
+<main class="setup">
+
+    <header class="setup-head">
+        <p class="setup-kicker">Caked by Caitlin</p>
+        <h1 class="setup-h1">Let's set up your shop</h1>
+        <p class="setup-intro">${esc(setup.intro)}</p>
+    </header>
+
+    ${steps}
+
+    ${discBlock}
+
+    <footer class="setup-foot">
+        <p>Stuck on any of this? Text Grant a screenshot. None of it is urgent — the site works while you go.</p>
+        <a class="setup-link" href="../index.html">← Back to the site</a>
+    </footer>
+
+</main>
+
+<script>
+/* Copy buttons. Real clipboard, real confirmation — the button says "Copied" for a beat so
+   she KNOWS it worked, instead of wondering. Falls back to a select-the-text path on the rare
+   browser without clipboard access. */
+document.querySelectorAll('.cp-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var value = btn.getAttribute('data-copy');
+        var label = btn.querySelector('.cp-btn-text');
+        function done() {
+            btn.classList.add('is-copied');
+            label.textContent = 'Copied';
+            setTimeout(function () { btn.classList.remove('is-copied'); label.textContent = 'Copy'; }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(value).then(done).catch(function () {
+                window.prompt('Copy this:', value);
+            });
+        } else {
+            window.prompt('Copy this:', value);
+        }
+    });
+});
+
+/* The "Mark done" pills for steps we can't detect server-side (accepting the GitHub invite).
+   Remembered on her device so the list reflects her real progress. */
+document.querySelectorAll('.step-status[data-local]').forEach(function (pill) {
+    var key = 'cbc_setup_' + pill.getAttribute('data-local');
+    if (localStorage.getItem(key) === '1') {
+        pill.classList.add('is-done');
+        pill.querySelector('.step-status-text').textContent = 'Done';
+    }
+    pill.style.cursor = 'pointer';
+    pill.addEventListener('click', function () {
+        var now = pill.classList.toggle('is-done');
+        localStorage.setItem(key, now ? '1' : '0');
+        pill.querySelector('.step-status-text').textContent = now ? 'Done' : 'Mark done';
+    });
+});
+</script>
+</body>
+</html>
+`;
+
+  mkdirSync(join(ROOT, 'setup'), { recursive: true });
+  writeFileSync(join(ROOT, 'setup', 'index.html'), page);
+  return connected;
+}
+
 /* ---------- sitemap ---------- */
 function buildSitemap() {
   const url = site.seo.url.replace(/\/?$/, '/');
@@ -562,6 +727,7 @@ writeFileSync(indexPath, html);
 writeFileSync(join(ROOT, 'sitemap.xml'), buildSitemap());
 
 const writtenLooks = buildLooks();
+const setupStatus = buildSetup();
 
 /* ---------- report ---------- */
 const counts = {
@@ -597,6 +763,8 @@ if (writtenLooks.length) {
 console.log(`  awaiting a link:   ${counts.needsLink}`);
 console.log(`  awaiting enrich:   ${counts.needsEnrichment}`);
 console.log(`  NEEDS ATTENTION:   ${counts.needsAttention}  <-- live but NOT earning`);
+
+console.log(`  setup page:        /setup/  (auth:${setupStatus.auth ? '✓' : '✗'} shopmy:${setupStatus.shopmy ? '✓' : '✗'} amazon:${setupStatus.amazon ? '✓' : '✗'})`);
 
 if (!site.socials.instagram) console.log('\n  note: no Instagram URL in data/site.json — the social row is empty.');
 if (!site.headshot) console.log('  note: no headshot in data/site.json — showing a placeholder circle.');

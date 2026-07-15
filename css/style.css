@@ -755,3 +755,270 @@ body.is-editing { padding-bottom: 68px; }
 /* In edit mode the reveal is a distraction — she needs to see the photo she's judging, in
    colour, not a black-and-white version of it. */
 .is-editing .reveal img { filter: none !important; }
+
+/* ==========================================================================
+   SETUP PAGE (/setup/)
+
+   Caitlin's self-service onboarding: accept her invite, get her affiliate accounts, plug in
+   her IDs. Same black-and-white world as the site. The whole job here is that COPYING is
+   effortless and she always knows what's actually done.
+   ========================================================================== */
+
+.setup {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 56px 20px 80px;
+}
+
+.setup-head { margin-bottom: 40px; }
+
+.setup-kicker {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+}
+
+.setup-h1 {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+}
+
+.setup-intro {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+}
+
+/* ---------- a step ---------- */
+.step {
+    padding: 26px 0;
+    border-top: 1px solid var(--line);
+}
+
+.step--soft { border-top-color: var(--line-mid); }
+
+.step-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.step-num {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--line-mid);
+    font-size: 0.8rem;
+    color: var(--ink);
+}
+
+.step-headings { flex: 1 1 auto; min-width: 0; }
+
+.step-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.step-time {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+/* live connection status — green dot when the config actually has the value */
+.step-status {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border-radius: 100px;
+    border: 1px solid var(--line-mid);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    user-select: none;
+}
+
+.step-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.28);
+    transition: background 220ms var(--ease);
+}
+
+.step-status.is-done {
+    border-color: rgba(127, 224, 168, 0.4);
+    color: #7FE0A8;
+}
+
+.step-status.is-done .step-status-dot { background: #7FE0A8; }
+
+.step-why {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+}
+
+.step-warn {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #E8C77E;
+    background: rgba(232, 199, 126, 0.08);
+    border: 1px solid rgba(232, 199, 126, 0.22);
+    border-radius: 3px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+
+.step-actions { display: flex; flex-direction: column; gap: 12px; }
+
+.step-line {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    padding-left: 16px;
+    position: relative;
+}
+
+.step-line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+}
+
+.step-note {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: -4px;
+}
+
+/* ---------- a link-out button ---------- */
+.setup-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    padding: 12px 20px;
+    border-radius: 3px;
+    background: #FFF;
+    color: #0A0A0A;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: opacity 200ms var(--ease);
+}
+
+.setup-link:hover { opacity: 0.82; }
+
+/* ---------- THE COPY ROW — the heart of this page ---------- */
+.cp {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--line-mid);
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.cp-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 11px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+}
+
+.cp-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.cp-value {
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 0.82rem;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;   /* long URL stays one clean line, never wraps into a mess */
+}
+
+.cp-btn {
+    flex: 0 0 auto;
+    padding: 0 20px;
+    background: #FFF;
+    color: #0A0A0A;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-left: 1px solid var(--line-mid);
+    transition: background 200ms var(--ease), color 200ms var(--ease);
+    min-width: 88px;   /* width doesn't jump when the label becomes "Copied" */
+}
+
+.cp-btn:hover { background: #E8E6E2; }
+
+.cp-btn.is-copied {
+    background: #7FE0A8;
+    color: #06120B;
+}
+
+/* ---------- footer ---------- */
+.setup-foot {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+}
+
+.setup-foot p {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+}
+
+@media (min-width: 600px) {
+    .cp-value { font-size: 0.86rem; }
+}
+
+/* A whisper-quiet link to the setup checklist. Present for Caitlin, invisible to the eye
+   of a browsing customer unless they go looking. */
+.footer-manage {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    transition: color 200ms var(--ease);
+}
+
+.footer-manage:hover { color: var(--ink-soft); }

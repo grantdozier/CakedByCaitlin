@@ -23,6 +23,7 @@ the architecture — see "SEO is load-bearing" below.
 
 ## For Caitlin
 
+- **The setup page** at [/setup/](https://grantdozier.github.io/CakedByCaitlin/setup/) — her self-service checklist: accept the invite, get affiliate accounts, plug in IDs. Live status + copy buttons.
 - **[CAITLIN-HOWTO.md](CAITLIN-HOWTO.md)** — how to add a product, build a look, add merch
 - **[CAITLIN-AFFILIATE-GUIDE.md](CAITLIN-AFFILIATE-GUIDE.md)** — which affiliate programs to
   join, in what order, and what she's legally required to say

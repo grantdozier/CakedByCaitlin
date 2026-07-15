@@ -76,7 +76,11 @@ jobs:
       - name: Stage artifact
         run: |
           mkdir -p _site
-          for item in index.html 404.html robots.txt sitemap.xml og-image.jpg css js images data admin merch; do
+          # Explicit allowlist. Subdirectories (looks/, setup/, admin/) MUST be named — the
+          # *.html catch-all below only reaches the repo root, so a generated subpage that
+          # isn't listed here silently 404s. favicon + apple-touch-icon are referenced by
+          # every page and must ship too.
+          for item in index.html 404.html robots.txt sitemap.xml og-image.jpg favicon.svg apple-touch-icon.png css js images data admin looks setup; do
             if [ -e "$item" ]; then
               cp -r "$item" _site/
             fi

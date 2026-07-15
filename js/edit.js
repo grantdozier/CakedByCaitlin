@@ -63,6 +63,7 @@
             '  <button type="button" class="edit-btn edit-btn--ghost" id="editDiscard" hidden>Discard</button>' +
             '  <button type="button" class="edit-btn" id="editSave" hidden>Save changes</button>' +
             '  <button type="button" class="edit-btn" id="editSignIn">Sign in with GitHub</button>' +
+            '  <a class="edit-btn edit-btn--ghost" href="setup/">Setup</a>' +
             '</div>';
         document.body.appendChild(bar);
 
